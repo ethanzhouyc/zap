@@ -102,7 +102,7 @@ limitations under the License.
                   hashAttributeIdClusterId(props.row.id, selectedCluster.id)
                 ]
               "
-              :disable="isDisabled(props.row.id, selectedCluster.id)"
+              :disable="storageOptionIsDisabled(props.row.id, selectedCluster.id)"
               class="col"
               :options="storageOptions"
               dense
@@ -235,6 +235,10 @@ export default {
       return !this.selection.includes(
         this.hashAttributeIdClusterId(id, selectedClusterId)
       )
+    },
+    storageOptionIsDisabled(id, selectedClusterId) {
+      let isExternal = this.selectionStorageOption[this.hashAttributeIdClusterId(id, selectedClusterId)];
+      return this.isDisabled(id, selectedClusterId) || isExternal === "External"
     },
     setToNull(row, selectedClusterId) {
       this.handleLocalChange(null, 'defaultValue', row, selectedClusterId)
