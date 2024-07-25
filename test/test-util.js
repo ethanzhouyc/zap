@@ -150,6 +150,8 @@ exports.testCustomXmlDeviceType =
 exports.customClusterXml =
   './test/resource/custom-cluster/custom-bead-cluster.xml'
 exports.badTestCustomXml = './test/resource/custom-cluster/bad-test-custom.xml'
+exports.matterCustomXml =
+  './test/resource/custom-cluster/test-custom-matter-cluster.xml'
 
 exports.totalClusterCount = 111
 exports.totalDomainCount = 20
