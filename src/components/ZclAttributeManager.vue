@@ -73,14 +73,13 @@ limitations under the License.
               @update:model-value="
                 (val) => {
                   console.log('this is props variable: ', props.row)
-                  // console.log('this is attribute data: ', relevantAttributeData)
-                  // console.log('selectionnn: ', val)
-                  // toggleAttributeSelection(
-                  //   selection,
-                  //   'selectedAttributes',
-                  //   props.row,
-                  //   selectedCluster.id
-                  // )
+                  console.log('selectionnn: ', val)
+                  toggleAttributeSelection(
+                    selection,
+                    'selectedAttributes',
+                    props.row,
+                    selectedCluster.id
+                  )
                 }
               "
             />
@@ -432,7 +431,11 @@ export default {
       forcedExternal: [],
       enableSingleton: false,
       enableBounded: false,
-      fixedSelection: [],
+      fixedSelection: [
+        3275, 2034, 3105, 4040, 4223, 2646, 6240, 8802, 70913, 75113, 84292,
+        85528, 96617, 97940, 106067, 108848, 112138, 114997, 118865, 122797,
+        125788, 60049, 62853, 20928, 106509, 108829, 112119, 111646,
+      ],
     }
   },
   mounted() {
