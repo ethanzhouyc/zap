@@ -28,6 +28,7 @@ limitations under the License.
       row-key="<b>name</b>"
       dense
       flat
+      virtual-scroll
       binary-state-sort
       v-model:pagination="pagination"
       :sort-method="customAttributeSort"
@@ -65,17 +66,22 @@ limitations under the License.
           <q-td key="included" :props="props" auto-width class="toggle-box">
             <q-toggle
               class="q-mt-xs v-step-13"
-              v-model="selection"
+              v-model="fixedSelection"
               :val="hashAttributeIdClusterId(props.row.id, selectedCluster.id)"
               indeterminate-value="false"
               keep-color
               @update:model-value="
-                toggleAttributeSelection(
-                  selection,
-                  'selectedAttributes',
-                  props.row,
-                  selectedCluster.id
-                )
+                (val) => {
+                  console.log('this is props variable: ', props.row)
+                  // console.log('this is attribute data: ', relevantAttributeData)
+                  // console.log('selectionnn: ', val)
+                  // toggleAttributeSelection(
+                  //   selection,
+                  //   'selectedAttributes',
+                  //   props.row,
+                  //   selectedCluster.id
+                  // )
+                }
               "
             />
           </q-td>
@@ -240,11 +246,16 @@ import restApi from '../../src-shared/rest-api.js'
 //This mixin derives from common-mixin.
 import EditableAttributeMixin from '../util/editable-attributes-mixin'
 import uiOptions from '../util/ui-options'
+import { QSpinnerGears } from 'quasar'
 
 export default {
   name: 'ZclAttributeManager',
   mixins: [EditableAttributeMixin, uiOptions],
   methods: {
+    logValues(selection) {
+      console.log('ethan is here')
+      console.log(selection)
+    },
     //retrieve list of cluster and attribute pairs that should be forced External Storage
     loadForcedExternal() {
       this.$serverPost(restApi.uri.forcedExternal).then((resp) => {
@@ -421,6 +432,7 @@ export default {
       forcedExternal: [],
       enableSingleton: false,
       enableBounded: false,
+      fixedSelection: [],
     }
   },
   mounted() {
@@ -525,6 +537,7 @@ export default {
     if (this.$serverGet != null) {
       this.forcedExternal = []
       this.loadForcedExternal()
+      this.$q.loading.hide()
     }
   },
 }

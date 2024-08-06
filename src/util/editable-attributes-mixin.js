@@ -40,6 +40,18 @@ export default {
                   .toLowerCase()
                   .includes(this.individualClusterFilterString.toLowerCase())
           })
+          .map((attribute) => {
+            // console.log('hello: ', attribute, this.selection)
+            return {
+              ...attribute,
+              selected: this.selection.includes(
+                this.hashAttributeIdClusterId(
+                  attribute.id,
+                  attribute.clusterRef
+                )
+              ),
+            }
+          })
       },
     },
     selection: {
@@ -185,6 +197,7 @@ export default {
       this.$store.dispatch('zap/updateSelectedAttribute', editContext)
     },
     toggleAttributeSelection(list, listType, attributeData, clusterId) {
+      console.log(list)
       // We determine the ID that we need to toggle within the list.
       // This ID comes from hashing the base ZCL attribute and cluster data.
       let indexOfValue = list.indexOf(

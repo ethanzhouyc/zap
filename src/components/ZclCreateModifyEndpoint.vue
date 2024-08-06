@@ -59,7 +59,7 @@ limitations under the License.
             use-input
             :multiple="enableMultipleDevice"
             :use-chips="enableMultipleDevice"
-            :options="deviceTypeOptions"
+            :options="[deviceTypeOptions]"
             v-model="deviceType"
             :rules="[
               (val) => !(val == null || val?.length == 0) || '* Required',
@@ -69,6 +69,26 @@ limitations under the License.
             @filter="filterDeviceTypes"
             data-test="select-endpoint-input"
           >
+            <template v-slot:option="scope">
+              <q-list style="min-width: 100px">
+                <template v-for="child in scope.opt" :key="child.deviceTypeRef">
+                  <q-item
+                    dense
+                    clickable
+                    v-ripple
+                    v-close-popup
+                    @click="setSelectOption(child)"
+                    :class="{ 'bg-light-blue-1': false }"
+                  >
+                    <q-item-section>
+                      <q-item-label class="q-ml-md">{{
+                        getDeviceOptionLabel(child)
+                      }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-list>
+            </template>
             <template v-slot:after>
               <q-btn
                 v-if="isDeviceLibraryDocumentationAvailable"
@@ -522,6 +542,7 @@ export default {
   },
   methods: {
     setSelectOption(val) {
+      console.log(val)
       const i = this.tmpSelectedOptions.findIndex(
         (e) => e.deviceTypeRef === val.deviceTypeRef
       )
@@ -627,6 +648,7 @@ export default {
       )
     },
     newEpt() {
+      console.log('testing here')
       const deviceTypeRef = []
       const deviceIdentifier = []
       const deviceVersion = []

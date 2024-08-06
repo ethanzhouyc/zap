@@ -228,6 +228,7 @@ limitations under the License.
 import CommonMixin from '../util/common-mixin'
 import restApi from '../../src-shared/rest-api'
 import uiOptions from '../util/ui-options'
+import { QSpinnerGears } from 'quasar'
 
 let ZclClusterRoleAction = {
   Add: 'add',
@@ -549,6 +550,13 @@ export default {
       }
     },
     selectCluster(cluster) {
+      this.$q.loading.show({
+        delay: 500,
+        spinner: QSpinnerGears,
+        messageColor: 'white',
+        message: 'Please wait while zap is loading...',
+        spinnerSize: 300,
+      })
       this.$store.dispatch('zap/updateSelectedCluster', cluster).then(() => {
         this.$store.dispatch(
           'zap/refreshEndpointTypeCluster',
