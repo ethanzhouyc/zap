@@ -45,11 +45,24 @@ limitations under the License.
       <description>Breadcrumb</description>
       <access op="read" privilege="view"/>
       <access op="write" privilege="administer"/>
+      <mandatoryConform/>
     </attribute>
-    <attribute side="server" code="0x01" define="BASIC_COMMISSIONING_INFO" type="BasicCommissioningInfo" writable="false" optional="false">BasicCommissioningInfo</attribute>
-    <attribute side="server" code="0x02" define="REGULATORY_CONFIG" type="RegulatoryLocationType" writable="false" optional="false">RegulatoryConfig</attribute>
-    <attribute side="server" code="0x03" define="LOCATION_CAPABILITY" type="RegulatoryLocationType" writable="false" optional="false">LocationCapability</attribute>
-    <attribute side="server" code="0x04" define="SUPPORTS_CONCURRENT_CONNECTION" type="boolean" writable="false" default="1" optional="false">SupportsConcurrentConnection</attribute>
+    <attribute side="server" code="0x01" define="BASIC_COMMISSIONING_INFO" type="BasicCommissioningInfo" writable="false" optional="false">
+      <description>BasicCommissioningInfo</description>
+      <mandatoryConform/>
+    </attribute>
+    <attribute side="server" code="0x02" define="REGULATORY_CONFIG" type="RegulatoryLocationType" writable="false" optional="false">
+      <description>RegulatoryConfig</description>
+      <mandatoryConform/>
+    </attribute>
+    <attribute side="server" code="0x03" define="LOCATION_CAPABILITY" type="RegulatoryLocationType" writable="false" optional="false">
+      <description>LocationCapability</description>
+      <mandatoryConform/>
+    </attribute>
+    <attribute side="server" code="0x04" define="SUPPORTS_CONCURRENT_CONNECTION" type="boolean" writable="false" default="1" optional="false">
+      <description>SupportsConcurrentConnection</description>
+      <mandatoryConform/>
+    </attribute>
 
     <command source="client" code="0x00" name="ArmFailSafe" response="ArmFailSafeResponse" optional="false" cli="chip fabric_commissioning armfailsafe">
       <description>Arm the persistent fail-safe timer with an expiry time of now + ExpiryLengthSeconds using device clock</description>

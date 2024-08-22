@@ -45,12 +45,14 @@ limitations under the License.
         <server tick="false" init="false">true</server>
         <command source="client" code="0x00" name="RetrieveLogsRequest" response="RetrieveLogsResponse" optional="false" cli="chip logs retrieve">
             <description>Retrieving diagnostic logs from a Node</description>
+            <mandatoryConform/>
             <arg name="Intent" type="IntentEnum"/>
             <arg name="RequestedProtocol" type="TransferProtocolEnum"/>
             <arg name="TransferFileDesignator" type="CHAR_STRING" length="32" optional="true"/>
         </command>
         <command source="server" code="0x01" name="RetrieveLogsResponse" optional="false" cli="chip logs response">
             <description>Response to the RetrieveLogsRequest</description>
+            <mandatoryConform/>
             <arg name="Status" type="StatusEnum"/>
             <arg name="LogContent" type="LONG_OCTET_STRING"/>
             <arg name="UTCTimeStamp" type="epoch_us" optional="true"/>

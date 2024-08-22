@@ -38,12 +38,28 @@ limitations under the License.
     <define>ADMINISTRATOR_COMMISSIONING_CLUSTER</define>
     <description>Commands to trigger a Node to allow a new Administrator to commission it.</description>
 
-    <attribute side="server" code="0x0000" define="WINDOW_STATUS" type="CommissioningWindowStatusEnum" writable="false" optional="false">WindowStatus</attribute>
-    <attribute side="server" code="0x0001" define="ADMIN_FABRIC_INDEX" type="fabric_idx" writable="false" isNullable="true" optional="false">AdminFabricIndex</attribute>
-    <attribute side="server" code="0x0002" define="ADMIN_VENDOR_ID" type="INT16U" writable="false" isNullable="true" optional="false">AdminVendorId</attribute>
+    <features>
+      <feature bit="0" code="BC" name="Basic" summary="Node supports Basic Commissioning Method.">
+        <optionalConform/>
+      </feature>
+    </features>
+
+    <attribute side="server" code="0x0000" define="WINDOW_STATUS" type="CommissioningWindowStatusEnum" writable="false" optional="false">
+      <description>WindowStatus</description>
+      <mandatoryConform/>
+    </attribute>
+    <attribute side="server" code="0x0001" define="ADMIN_FABRIC_INDEX" type="fabric_idx" writable="false" isNullable="true" optional="false">
+      <description>AdminFabricIndex</description>
+      <mandatoryConform/>
+    </attribute>
+    <attribute side="server" code="0x0002" define="ADMIN_VENDOR_ID" type="INT16U" writable="false" isNullable="true" optional="false">
+      <description>AdminVendorId</description>
+      <mandatoryConform/>
+    </attribute>
 
     <command source="client" code="0x00" name="OpenCommissioningWindow" mustUseTimedInvoke="true" optional="false">
       <description>This command is used by a current Administrator to instruct a Node to go into commissioning mode using enhanced commissioning method.</description>
+      <mandatoryConform/>
       <arg name="CommissioningTimeout" type="INT16U"/>
       <arg name="PAKEPasscodeVerifier" type="OCTET_STRING"/>
       <arg name="Discriminator" type="INT16U"/>
@@ -54,12 +70,14 @@ limitations under the License.
 
     <command source="client" code="0x01" name="OpenBasicCommissioningWindow" mustUseTimedInvoke="true" optional="true">
       <description>This command is used by a current Administrator to instruct a Node to go into commissioning mode using basic commissioning method, if the node supports it.</description>
+      <mandatoryConform/>
       <arg name="CommissioningTimeout" type="INT16U"/>
       <access op="invoke" privilege="administer"/>
     </command>
 
     <command source="client" code="0x02" name="RevokeCommissioning" mustUseTimedInvoke="true" optional="false">
       <description>This command is used by a current Administrator to instruct a Node to revoke any active Open Commissioning Window or Open Basic Commissioning Window command.</description>
+      <mandatoryConform/>
       <access op="invoke" privilege="administer"/>
     </command>
 
