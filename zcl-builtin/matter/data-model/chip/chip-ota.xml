@@ -46,6 +46,7 @@ limitations under the License.
         <server tick="false" init="false">true</server>
         <command source="client" code="0x00" name="QueryImage" response="QueryImageResponse" optional="false" cli="chip ota queryimage">
             <description>Determine availability of a new Software Image</description>
+            <mandatoryConform/>
             <arg name="VendorID" type="vendor_id"/>
             <arg name="ProductID" type="INT16U"/>
             <arg name="SoftwareVersion" type="INT32U"/>
@@ -57,6 +58,7 @@ limitations under the License.
         </command>
         <command source="server" code="0x01" name="QueryImageResponse" optional="false" cli="chip ota queryimageresponse">
             <description>Response to QueryImage command</description>
+            <mandatoryConform/>
             <arg name="Status" type="OTAQueryStatus"/>
             <arg name="DelayedActionTime" type="INT32U" optional="true"/>
             <arg name="ImageURI" type="CHAR_STRING" length="256" optional="true"/>
@@ -68,16 +70,19 @@ limitations under the License.
         </command>
         <command source="client" code="0x02" name="ApplyUpdateRequest" response="ApplyUpdateResponse" optional="false" cli="chip ota applyupdaterequest">
             <description>Determine next action to take for a downloaded Software Image</description>
+            <mandatoryConform/>
             <arg name="UpdateToken" type="OCTET_STRING" length="32"/>
             <arg name="NewVersion" type="INT32U"/>
         </command>
         <command source="server" code="0x03" name="ApplyUpdateResponse" optional="false" cli="chip ota applyupdateresponse">
             <description>Reponse to ApplyUpdateRequest command</description>
+            <mandatoryConform/>
             <arg name="Action" type="OTAApplyUpdateAction"/>
             <arg name="DelayedActionTime" type="INT32U"/>
         </command>
         <command source="client" code="0x04" name="NotifyUpdateApplied" optional="false" cli="chip ota notifyupdateapplied">
             <description>Notify OTA Provider that an update was applied</description>
+            <mandatoryConform/>
             <arg name="UpdateToken" type="OCTET_STRING" length="32"/>
             <arg name="SoftwareVersion" type="INT32U"/>
         </command>
@@ -121,12 +126,25 @@ limitations under the License.
         <define>OTA_SOFTWARE_UPDATE_REQUESTOR_CLUSTER</define>
         <client tick="false" init="false">true</client>
         <server tick="false" init="false">true</server>
-        <attribute side="server" code="0x0000" define="DEFAULT_OTA_PROVIDERS" type="ARRAY" entryType="ProviderLocation" writable="true" optional="false">DefaultOTAProviders</attribute>
-        <attribute side="server" code="0x0001" define="UPDATE_POSSIBLE" type="BOOLEAN" default="true" writable="false" optional="false">UpdatePossible</attribute>
-        <attribute side="server" code="0x0002" define="UPDATE_STATE" type="OTAUpdateStateEnum" default="Unknown" writable="false" optional="false">UpdateState</attribute>
-        <attribute side="server" code="0x0003" define="UPDATE_STATE_PROGRESS" type="INT8U" min="0" max="100" writable="false" isNullable="true" optional="false">UpdateStateProgress</attribute>
+        <attribute side="server" code="0x0000" define="DEFAULT_OTA_PROVIDERS" type="ARRAY" entryType="ProviderLocation" writable="true" optional="false">
+            <description>DefaultOTAProviders</description>
+            <mandatoryConform/>
+        </attribute>
+        <attribute side="server" code="0x0001" define="UPDATE_POSSIBLE" type="BOOLEAN" default="true" writable="false" optional="false">
+            <description>UpdatePossible</description>
+            <mandatoryConform/>
+        </attribute>
+        <attribute side="server" code="0x0002" define="UPDATE_STATE" type="OTAUpdateStateEnum" default="Unknown" writable="false" optional="false">
+            <description>UpdateState</description>
+            <mandatoryConform/>
+        </attribute>
+        <attribute side="server" code="0x0003" define="UPDATE_STATE_PROGRESS" type="INT8U" min="0" max="100" writable="false" isNullable="true" optional="false">
+            <description>UpdateStateProgress</description>
+            <mandatoryConform/>
+        </attribute>
         <command source="client" code="0x00" name="AnnounceOTAProvider" optional="true" cli="chip ota announceotaprovider">
             <description>Announce the presence of an OTA Provider</description>
+            <optionalConform/>
             <arg name="ProviderNodeID" type="node_id"/>
             <arg name="VendorID" type="vendor_id"/>
             <arg name="AnnouncementReason" type="OTAAnnouncementReason"/>

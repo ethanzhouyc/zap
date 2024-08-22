@@ -77,6 +77,7 @@ limitations under the License.
       <access op="read" privilege="administer"/>
       <access op="write" privilege="administer"/>
       <access modifier="fabric-scoped"/>
+      <mandatoryConform/>
     </attribute>
 
     <attribute side="server" code="0x0001" define="EXTENSION" type="ARRAY" entryType="AccessControlExtensionStruct" writable="true" optional="true">
@@ -84,21 +85,25 @@ limitations under the License.
       <access op="read" privilege="administer"/>
       <access op="write" privilege="administer"/>
       <access modifier="fabric-scoped"/>
+      <optionalConform/>
     </attribute>
 
     <attribute side="server" code="0x0002" define="SUBJECTS_PER_ACCESS_CONTROL_ENTRY" type="int16u" writable="false">
       <description>SubjectsPerAccessControlEntry</description>
       <access op="read" privilege="view"/>
+      <mandatoryConform/>
     </attribute>
 
     <attribute side="server" code="0x0003" define="TARGETS_PER_ACCESS_CONTROL_ENTRY" type="int16u" writable="false">
       <description>TargetsPerAccessControlEntry</description>
       <access op="read" privilege="view"/>
+      <mandatoryConform/>
     </attribute>
 
     <attribute side="server" code="0x0004" define="ACCESS_CONTROL_ENTRIES_PER_FABRIC" type="int16u" writable="false">
       <description>AccessControlEntriesPerFabric</description>
       <access op="read" privilege="view"/>
+      <mandatoryConform/>
     </attribute>
 
     <event side="server" code="0x0000" name="AccessControlEntryChanged" priority="info" isFabricSensitive="true" optional="false">

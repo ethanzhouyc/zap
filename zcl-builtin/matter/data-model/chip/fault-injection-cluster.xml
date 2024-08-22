@@ -32,6 +32,7 @@ limitations under the License.
     <description>The Fault Injection Cluster provide a means for a test harness to configure faults(for example triggering a fault in the system).</description>
     <command source="client" code="0x00" name="FailAtFault" optional="false">
       <description>Configure a fault to be triggered deterministically</description>
+      <mandatoryConform/>
       <arg name="Type" type="FaultType"/>      
       <arg name="Id" type="INT32U"/>
       <arg name="NumCallsToSkip" type="INT32U"/>
@@ -41,6 +42,7 @@ limitations under the License.
     </command>
     <command source="client" code="0x01" name="FailRandomlyAtFault" optional="false">
       <description>Configure a fault to be triggered randomly, with a given probability defined as a percentage</description>
+      <mandatoryConform/>
       <arg name="Type" type="FaultType"/>      
       <arg name="Id" type="INT32U"/>
       <arg name="Percentage" type="INT8U"/>   

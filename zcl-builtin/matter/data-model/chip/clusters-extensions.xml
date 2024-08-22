@@ -19,6 +19,7 @@ limitations under the License.
   <clusterExtension code="0x0028">
     <command source="client" code="0x00" name="MfgSpecificPing" optional="true" manufacturerCode="0x1002">
       <description>        <!-- #6486: MfgSpecificPing won't work until we support MEI prefix in ZAP --></description>
+      <optionalConform/>
     </command>
   </clusterExtension>
 </configurator>

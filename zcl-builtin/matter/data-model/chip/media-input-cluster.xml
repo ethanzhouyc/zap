@@ -25,24 +25,43 @@ limitations under the License.
     <server init="false" tick="false">true</server>
     <!-- TODO: Add feature map once it is supported -->
     <description>This cluster provides an interface for controlling the Input Selector on a media device such as a TV.</description>
-    <attribute side="server" code="0x0000" define="MEDIA_INPUT_LIST"          type="ARRAY" entryType="InputInfoStruct" length="254"           writable="false" optional="false">InputList</attribute>
-    <attribute side="server" code="0x0001" define="MEDIA_INPUT_CURRENT_INPUT" type="INT8U" default="0x00"              min="0x00" max="0xFF"  writable="false" optional="false">CurrentInput</attribute>
+
+    <features>
+      <feature bit="0" code="NU" name="NameUpdates" summary="Supports updates to the input names">
+        <optionalConform/>
+      </feature>
+    </features>
+
+    <attribute side="server" code="0x0000" define="MEDIA_INPUT_LIST"          type="ARRAY" entryType="InputInfoStruct" length="254"           writable="false" optional="false">
+      <description>InputList</description>
+      <mandatoryConform/>
+    </attribute>
+    <attribute side="server" code="0x0001" define="MEDIA_INPUT_CURRENT_INPUT" type="INT8U" default="0x00"              min="0x00" max="0xFF"  writable="false" optional="false">
+      <description>CurrentInput</description>
+      <mandatoryConform/>
+    </attribute>
 
     <command source="client" code="0x00" name="SelectInput" optional="false">
       <description>Upon receipt, this SHALL change the input on the media device to the input at a specific index in the Input List.</description>
+      <mandatoryConform/>
       <arg name="Index" type="INT8U"/>
     </command>
 
     <command source="client" code="0x01" name="ShowInputStatus" optional="false">
       <description>Upon receipt, this SHALL display the active status of the input list on screen.</description>
+      <mandatoryConform/>
     </command>
 
     <command source="client" code="0x02" name="HideInputStatus" optional="false">
       <description>Upon receipt, this SHALL hide the input list from the screen.</description>
+      <mandatoryConform/>
     </command>
 
     <command source="client" code="0x03" name="RenameInput" optional="true">
       <description>Upon receipt, this SHALL rename the input at a specific index in the Input List. Updates to the input name SHALL appear in the TV settings menus.    </description>
+      <mandatoryConform>
+        <feature name="NU"/>
+      </mandatoryConform>
       <arg name="Index" type="INT8U"/>
       <arg name="Name" type="CHAR_STRING"/>
     </command>
