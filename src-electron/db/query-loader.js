@@ -96,6 +96,7 @@ INSERT INTO COMMAND (
   DESCRIPTION,
   SOURCE,
   IS_OPTIONAL,
+  CONFORMANCE,
   MUST_USE_TIMED_INVOKE,
   IS_FABRIC_SCOPED,
   RESPONSE_NAME,
@@ -104,7 +105,7 @@ INSERT INTO COMMAND (
   REMOVED_IN_REF,
   IS_DEFAULT_RESPONSE_ENABLED
 ) VALUES (
-  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
   (SELECT SPEC_ID FROM SPEC WHERE CODE = ? AND PACKAGE_REF = ?),
   (SELECT SPEC_ID FROM SPEC WHERE CODE = ? AND PACKAGE_REF = ?),
   ?
@@ -293,6 +294,7 @@ function commandMap(clusterId, packageId, commands) {
     command.description,
     command.source,
     dbApi.toDbBool(command.isOptional),
+    command.conformance,
     dbApi.toDbBool(command.mustUseTimedInvoke),
     dbApi.toDbBool(command.isFabricScoped),
     command.responseName,
