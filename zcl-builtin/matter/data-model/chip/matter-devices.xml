@@ -1512,7 +1512,7 @@ limitations under the License.
                         <orTerm>
                             <feature name="PIN"/>
                             <feature name="RID"/>
-                            <feature name="FPG"/>
+                            <feature name="FGP"/>
                             <feature name="FACE"/>
                         </orTerm>
                         </andTerm>
