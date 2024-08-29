@@ -2274,7 +2274,7 @@ async function parseFeatureFlags(db, packageId, featureFlags) {
  *                 { "feature": [
  *                      { "$": {"name": "PIN"}},
  *                      { "$": {"name": "RID"}},
- *                      { "$": {"name": "FPG"}},
+ *                      { "$": {"name": "FGP"}},
  *                      { "$": {"name": "FACE"}}
  *                   ]
  *                 }
@@ -2286,7 +2286,7 @@ async function parseFeatureFlags(db, packageId, featureFlags) {
  * }
  *
  * Output conformance string:
- *  "Matter & (PIN | RID | FPG | FACE)"
+ *  "Matter & (PIN | RID | FGP | FACE)"
  *
  * The baseLevelTerms variable include terms that can not have nested terms.
  * When they appear, stop recursing and return the name inside directly
