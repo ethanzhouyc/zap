@@ -3642,19 +3642,154 @@ This module provides queries related to events.
 ## DB API: feature related queries
 This module provides queries for features.
 
+
+* [DB API: feature related queries](#module_DB API_ feature related queries)
+    * [~getFeaturesByDeviceTypeRefs(db, deviceTypeRefs)](#module_DB API_ feature related queries..getFeaturesByDeviceTypeRefs) ⇒
+    * [~evaluateConformanceExpression(expression, elementMap)](#module_DB API_ feature related queries..evaluateConformanceExpression) ⇒
+        * [~evaluateBooleanExpression(expr)](#module_DB API_ feature related queries..evaluateConformanceExpression..evaluateBooleanExpression)
+        * [~evaluateWithParentheses(expr)](#module_DB API_ feature related queries..evaluateConformanceExpression..evaluateWithParentheses)
+    * [~checkMissingTerms(expression, elementMap)](#module_DB API_ feature related queries..checkMissingTerms) ⇒
+    * [~generateWarningMessage(featureData, endpointId, missingTerms, added)](#module_DB API_ feature related queries..generateWarningMessage) ⇒
+    * [~setNotificationOnFeatureChange(db, sessionId, result)](#module_DB API_ feature related queries..setNotificationOnFeatureChange)
+    * [~checkElementsToUpdate(elements, featureMap, featureData, endpointId)](#module_DB API_ feature related queries..checkElementsToUpdate) ⇒
+    * [~filterElementsToUpdate(elements, elementMap, featureCode)](#module_DB API_ feature related queries..filterElementsToUpdate) ⇒
+
 <a name="module_DB API_ feature related queries..getFeaturesByDeviceTypeRefs"></a>
 
 ### DB API: feature related queries~getFeaturesByDeviceTypeRefs(db, deviceTypeRefs) ⇒
-Get all device type features associated with a list of device type refs
+Get all device type features associated with a list of device type refs and an endpoint.
+Join ENDPOINT_TYPE_ATTRIBUTE and ATTRIBUTE table to get featureMap attribute associated with the feature,
+so the frontend could get and set featureMap bit easier.
+Only return features with cluster on the side specified in the deivce type.
 
 **Kind**: inner method of [<code>DB API: feature related queries</code>](#module_DB API_ feature related queries)  
 **Returns**: All feature information and device type conformance
-with associated device type and cluster details  
+with associated device type, cluster, and featureMap attribute details  
 
 | Param | Type |
 | --- | --- |
 | db | <code>\*</code> | 
 | deviceTypeRefs | <code>\*</code> | 
+
+<a name="module_DB API_ feature related queries..evaluateConformanceExpression"></a>
+
+### DB API: feature related queries~evaluateConformanceExpression(expression, elementMap) ⇒
+Evaluate the value of a boolean conformance expression that includes terms and operators.
+A term can be an attribute, command, feature, or conformance abbreviation.
+Operators include AND (&), OR (|), and NOT (!).
+The '[]' indicates optional conformance if the expression inside true.
+Expression containing comma means otherwise conformance. See spec for details.
+Examples of conformance expression: 'A & (!B | C)', 'A & B, [!C]'
+
+**Kind**: inner method of [<code>DB API: feature related queries</code>](#module_DB API_ feature related queries)  
+**Returns**: 'mandatory', 'optional', 'provisional', or 'notSupported'  
+
+| Param | Type |
+| --- | --- |
+| expression | <code>\*</code> | 
+| elementMap | <code>\*</code> | 
+
+
+* [~evaluateConformanceExpression(expression, elementMap)](#module_DB API_ feature related queries..evaluateConformanceExpression) ⇒
+    * [~evaluateBooleanExpression(expr)](#module_DB API_ feature related queries..evaluateConformanceExpression..evaluateBooleanExpression)
+    * [~evaluateWithParentheses(expr)](#module_DB API_ feature related queries..evaluateConformanceExpression..evaluateWithParentheses)
+
+<a name="module_DB API_ feature related queries..evaluateConformanceExpression..evaluateBooleanExpression"></a>
+
+#### evaluateConformanceExpression~evaluateBooleanExpression(expr)
+helper function to evaluate a single boolean expression
+
+**Kind**: inner method of [<code>evaluateConformanceExpression</code>](#module_DB API_ feature related queries..evaluateConformanceExpression)  
+
+| Param | Type |
+| --- | --- |
+| expr | <code>\*</code> | 
+
+<a name="module_DB API_ feature related queries..evaluateConformanceExpression..evaluateWithParentheses"></a>
+
+#### evaluateConformanceExpression~evaluateWithParentheses(expr)
+helper function to process parentheses and evaluate inner expressions first
+
+**Kind**: inner method of [<code>evaluateConformanceExpression</code>](#module_DB API_ feature related queries..evaluateConformanceExpression)  
+
+| Param | Type |
+| --- | --- |
+| expr | <code>\*</code> | 
+
+<a name="module_DB API_ feature related queries..checkMissingTerms"></a>
+
+### DB API: feature related queries~checkMissingTerms(expression, elementMap) ⇒
+Check if any terms in the expression are neither a key in the elementMap nor an abbreviation.
+If so, it means the conformance depends on terms with unknown values and changes are not allowed.
+
+**Kind**: inner method of [<code>DB API: feature related queries</code>](#module_DB API_ feature related queries)  
+**Returns**: all missing terms in an array  
+
+| Param | Type |
+| --- | --- |
+| expression | <code>\*</code> | 
+| elementMap | <code>\*</code> | 
+
+<a name="module_DB API_ feature related queries..generateWarningMessage"></a>
+
+### DB API: feature related queries~generateWarningMessage(featureData, endpointId, missingTerms, added) ⇒
+Generate a warning message after processing conformance of the updated device type feature.
+Set flags to decide whether to show a popup warning or disable changes in the frontend.
+
+**Kind**: inner method of [<code>DB API: feature related queries</code>](#module_DB API_ feature related queries)  
+**Returns**: warning message, disableChange flag, and displayWarning flag  
+
+| Param | Type |
+| --- | --- |
+| featureData | <code>\*</code> | 
+| endpointId | <code>\*</code> | 
+| missingTerms | <code>\*</code> | 
+| added | <code>\*</code> | 
+
+<a name="module_DB API_ feature related queries..setNotificationOnFeatureChange"></a>
+
+### DB API: feature related queries~setNotificationOnFeatureChange(db, sessionId, result)
+Set or delete warning notification after updating a device type feature.
+
+**Kind**: inner method of [<code>DB API: feature related queries</code>](#module_DB API_ feature related queries)  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| sessionId | <code>\*</code> | 
+| result | <code>\*</code> | 
+
+<a name="module_DB API_ feature related queries..checkElementsToUpdate"></a>
+
+### DB API: feature related queries~checkElementsToUpdate(elements, featureMap, featureData, endpointId) ⇒
+Check if attributes and commands need to be updated for correct conformance.
+
+**Kind**: inner method of [<code>DB API: feature related queries</code>](#module_DB API_ feature related queries)  
+**Returns**: attributes and commands to be updated, warning related information  
+
+| Param | Type |
+| --- | --- |
+| elements | <code>\*</code> | 
+| featureMap | <code>\*</code> | 
+| featureData | <code>\*</code> | 
+| endpointId | <code>\*</code> | 
+
+<a name="module_DB API_ feature related queries..filterElementsToUpdate"></a>
+
+### DB API: feature related queries~filterElementsToUpdate(elements, elementMap, featureCode) ⇒
+Return attributes and commands to be updated satisfying:
+(1) its conformance includes feature code of the updated feature
+(2) it has mandatory conformance but it is not enabled, OR,
+		 it is has notSupported conformance but it is enabled
+
+**Kind**: inner method of [<code>DB API: feature related queries</code>](#module_DB API_ feature related queries)  
+**Returns**: elements that should be updated  
+
+| Param | Type |
+| --- | --- |
+| elements | <code>\*</code> | 
+| elementMap | <code>\*</code> | 
+| featureCode | <code>\*</code> | 
 
 <a name="module_DB API_ package-based queries."></a>
 
@@ -14371,6 +14506,7 @@ This module provides the API to access zcl specific information.
     * [~httpGetSessionKeyValues(db)](#module_REST API_ user data..httpGetSessionKeyValues) ⇒
     * [~httpGetEndpointIds(db)](#module_REST API_ user data..httpGetEndpointIds) ⇒
     * [~httpGetDeviceTypeFeatures(db)](#module_REST API_ user data..httpGetDeviceTypeFeatures) ⇒
+    * [~httpGetElementsToUpdate(db)](#module_REST API_ user data..httpGetElementsToUpdate) ⇒
     * [~httpGetSessionNotifications(db)](#module_REST API_ user data..httpGetSessionNotifications) ⇒
     * [~httpDeleteSessionNotification(db)](#module_REST API_ user data..httpDeleteSessionNotification) ⇒
     * [~httpGetPackageNotifications(db)](#module_REST API_ user data..httpGetPackageNotifications) ⇒
@@ -14400,6 +14536,7 @@ This module provides the API to access zcl specific information.
     * [~httpDeleteSessionPackage(db)](#module_REST API_ user data..httpDeleteSessionPackage) ⇒
     * [~httpPostDuplicateEndpoint(db)](#module_REST API_ user data..httpPostDuplicateEndpoint) ⇒
     * [~httpPostDuplicateEndpointType(db)](#module_REST API_ user data..httpPostDuplicateEndpointType) ⇒
+    * [~httpPatchUpdateBitOfFeatureMapAttribute(db)](#module_REST API_ user data..httpPatchUpdateBitOfFeatureMapAttribute) ⇒
     * [~duplicateEndpointTypeClusters(db, oldEndpointTypeId, newEndpointTypeId)](#module_REST API_ user data..duplicateEndpointTypeClusters)
 
 <a name="module_REST API_ user data..getComponentIdsByCluster"></a>
@@ -14445,6 +14582,18 @@ HTTP GET: endpoint ids of endpoints within a specified session
 
 ### REST API: user data~httpGetDeviceTypeFeatures(db) ⇒
 HTTP GET: device type features
+
+**Kind**: inner method of [<code>REST API: user data</code>](#module_REST API_ user data)  
+**Returns**: callback for the express uri registration  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+
+<a name="module_REST API_ user data..httpGetElementsToUpdate"></a>
+
+### REST API: user data~httpGetElementsToUpdate(db) ⇒
+HTTP GET: attributes and commands to be updated
 
 **Kind**: inner method of [<code>REST API: user data</code>](#module_REST API_ user data)  
 **Returns**: callback for the express uri registration  
@@ -14794,6 +14943,18 @@ Creating a duplicate for endpoint-type and endpoint-type-attributes
 
 **Kind**: inner method of [<code>REST API: user data</code>](#module_REST API_ user data)  
 **Returns**: newly created endpoint-type id  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+
+<a name="module_REST API_ user data..httpPatchUpdateBitOfFeatureMapAttribute"></a>
+
+### REST API: user data~httpPatchUpdateBitOfFeatureMapAttribute(db) ⇒
+Update feature map attribute with given new value
+
+**Kind**: inner method of [<code>REST API: user data</code>](#module_REST API_ user data)  
+**Returns**: status of the update  
 
 | Param | Type |
 | --- | --- |
@@ -15629,6 +15790,7 @@ This module provides the REST API to the user specific data.
     * [~httpGetSessionKeyValues(db)](#module_REST API_ user data..httpGetSessionKeyValues) ⇒
     * [~httpGetEndpointIds(db)](#module_REST API_ user data..httpGetEndpointIds) ⇒
     * [~httpGetDeviceTypeFeatures(db)](#module_REST API_ user data..httpGetDeviceTypeFeatures) ⇒
+    * [~httpGetElementsToUpdate(db)](#module_REST API_ user data..httpGetElementsToUpdate) ⇒
     * [~httpGetSessionNotifications(db)](#module_REST API_ user data..httpGetSessionNotifications) ⇒
     * [~httpDeleteSessionNotification(db)](#module_REST API_ user data..httpDeleteSessionNotification) ⇒
     * [~httpGetPackageNotifications(db)](#module_REST API_ user data..httpGetPackageNotifications) ⇒
@@ -15658,6 +15820,7 @@ This module provides the REST API to the user specific data.
     * [~httpDeleteSessionPackage(db)](#module_REST API_ user data..httpDeleteSessionPackage) ⇒
     * [~httpPostDuplicateEndpoint(db)](#module_REST API_ user data..httpPostDuplicateEndpoint) ⇒
     * [~httpPostDuplicateEndpointType(db)](#module_REST API_ user data..httpPostDuplicateEndpointType) ⇒
+    * [~httpPatchUpdateBitOfFeatureMapAttribute(db)](#module_REST API_ user data..httpPatchUpdateBitOfFeatureMapAttribute) ⇒
     * [~duplicateEndpointTypeClusters(db, oldEndpointTypeId, newEndpointTypeId)](#module_REST API_ user data..duplicateEndpointTypeClusters)
 
 <a name="module_REST API_ user data..getComponentIdsByCluster"></a>
@@ -15703,6 +15866,18 @@ HTTP GET: endpoint ids of endpoints within a specified session
 
 ### REST API: user data~httpGetDeviceTypeFeatures(db) ⇒
 HTTP GET: device type features
+
+**Kind**: inner method of [<code>REST API: user data</code>](#module_REST API_ user data)  
+**Returns**: callback for the express uri registration  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+
+<a name="module_REST API_ user data..httpGetElementsToUpdate"></a>
+
+### REST API: user data~httpGetElementsToUpdate(db) ⇒
+HTTP GET: attributes and commands to be updated
 
 **Kind**: inner method of [<code>REST API: user data</code>](#module_REST API_ user data)  
 **Returns**: callback for the express uri registration  
@@ -16052,6 +16227,18 @@ Creating a duplicate for endpoint-type and endpoint-type-attributes
 
 **Kind**: inner method of [<code>REST API: user data</code>](#module_REST API_ user data)  
 **Returns**: newly created endpoint-type id  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+
+<a name="module_REST API_ user data..httpPatchUpdateBitOfFeatureMapAttribute"></a>
+
+### REST API: user data~httpPatchUpdateBitOfFeatureMapAttribute(db) ⇒
+Update feature map attribute with given new value
+
+**Kind**: inner method of [<code>REST API: user data</code>](#module_REST API_ user data)  
+**Returns**: status of the update  
 
 | Param | Type |
 | --- | --- |
@@ -19758,8 +19945,7 @@ This module provides the APIs for dotdot Loading
     * [~parseManufacturerData(db, ctx)](#module_Loader API_ Loader APIs..parseManufacturerData) ⇒
     * [~parseProfilesData(db, ctx)](#module_Loader API_ Loader APIs..parseProfilesData) ⇒
     * [~parseFeatureFlags(db, packageId, featureFlags)](#module_Loader API_ Loader APIs..parseFeatureFlags) ⇒
-    * [~parseFeatureConformance(operand)](#module_Loader API_ Loader APIs..parseFeatureConformance) ⇒
-    * [~parseAndOrConformanceTerms(operand, joinChar)](#module_Loader API_ Loader APIs..parseAndOrConformanceTerms) ⇒
+    * [~parseConformanceFromXML(operand)](#module_Loader API_ Loader APIs..parseConformanceFromXML) ⇒
     * [~parseUiOptions(db, packageId, featureFlags)](#module_Loader API_ Loader APIs..parseUiOptions) ⇒
     * [~parseOptions(db)](#module_Loader API_ Loader APIs..parseOptions) ⇒
     * [~parseTextOptions(db, pkgRef, textOptions)](#module_Loader API_ Loader APIs..parseTextOptions) ⇒
@@ -21110,10 +21296,11 @@ Key/velues of the object itself, end up in CODE/LABEL combinations.
 | packageId | <code>\*</code> | 
 | featureFlags | <code>\*</code> | 
 
-<a name="module_Loader API_ Loader APIs..parseFeatureConformance"></a>
+<a name="module_Loader API_ Loader APIs..parseConformanceFromXML"></a>
 
-### Loader API: Loader APIs~parseFeatureConformance(operand) ⇒
-Parses feature conformance or an operand in feature conformance recursively from xml data.
+### Loader API: Loader APIs~parseConformanceFromXML(operand) ⇒
+Parses conformance or an operand in conformance recursively from xml data.
+The conformance could come from features, attributes, or commands
 
 An example of parsing the conformance of 'User' device type feature:
 
@@ -21128,7 +21315,7 @@ Input operand from xml data:
                 { "feature": [
                      { "$": {"name": "PIN"}},
                      { "$": {"name": "RID"}},
-                     { "$": {"name": "FPG"}},
+                     { "$": {"name": "FGP"}},
                      { "$": {"name": "FACE"}}
                   ]
                 }
@@ -21139,28 +21326,18 @@ Input operand from xml data:
    ]
 }
 
-Output device type feature conformance string:
- "Matter & (PIN | RID | FPG | FACE)"
+Output conformance string:
+ "Matter & (PIN | RID | FGP | FACE)"
+
+The baseLevelTerms variable include terms that can not have nested terms.
+When they appear, stop recursing and return the name inside directly
 
 **Kind**: inner method of [<code>Loader API: Loader APIs</code>](#module_Loader API_ Loader APIs)  
-**Returns**: The feature conformance string.  
+**Returns**: The conformance string.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | operand | <code>\*</code> | The operand to be parsed. |
-
-<a name="module_Loader API_ Loader APIs..parseAndOrConformanceTerms"></a>
-
-### Loader API: Loader APIs~parseAndOrConformanceTerms(operand, joinChar) ⇒
-Helper function to parse andTerm or orTerm from xml data
-
-**Kind**: inner method of [<code>Loader API: Loader APIs</code>](#module_Loader API_ Loader APIs)  
-**Returns**: feature conformance string  
-
-| Param | Type |
-| --- | --- |
-| operand | <code>\*</code> | 
-| joinChar | <code>\*</code> | 
 
 <a name="module_Loader API_ Loader APIs..parseUiOptions"></a>
 
@@ -21584,8 +21761,7 @@ This module provides the APIs for new data model loading
     * [~parseManufacturerData(db, ctx)](#module_Loader API_ Loader APIs..parseManufacturerData) ⇒
     * [~parseProfilesData(db, ctx)](#module_Loader API_ Loader APIs..parseProfilesData) ⇒
     * [~parseFeatureFlags(db, packageId, featureFlags)](#module_Loader API_ Loader APIs..parseFeatureFlags) ⇒
-    * [~parseFeatureConformance(operand)](#module_Loader API_ Loader APIs..parseFeatureConformance) ⇒
-    * [~parseAndOrConformanceTerms(operand, joinChar)](#module_Loader API_ Loader APIs..parseAndOrConformanceTerms) ⇒
+    * [~parseConformanceFromXML(operand)](#module_Loader API_ Loader APIs..parseConformanceFromXML) ⇒
     * [~parseUiOptions(db, packageId, featureFlags)](#module_Loader API_ Loader APIs..parseUiOptions) ⇒
     * [~parseOptions(db)](#module_Loader API_ Loader APIs..parseOptions) ⇒
     * [~parseTextOptions(db, pkgRef, textOptions)](#module_Loader API_ Loader APIs..parseTextOptions) ⇒
@@ -22936,10 +23112,11 @@ Key/velues of the object itself, end up in CODE/LABEL combinations.
 | packageId | <code>\*</code> | 
 | featureFlags | <code>\*</code> | 
 
-<a name="module_Loader API_ Loader APIs..parseFeatureConformance"></a>
+<a name="module_Loader API_ Loader APIs..parseConformanceFromXML"></a>
 
-### Loader API: Loader APIs~parseFeatureConformance(operand) ⇒
-Parses feature conformance or an operand in feature conformance recursively from xml data.
+### Loader API: Loader APIs~parseConformanceFromXML(operand) ⇒
+Parses conformance or an operand in conformance recursively from xml data.
+The conformance could come from features, attributes, or commands
 
 An example of parsing the conformance of 'User' device type feature:
 
@@ -22954,7 +23131,7 @@ Input operand from xml data:
                 { "feature": [
                      { "$": {"name": "PIN"}},
                      { "$": {"name": "RID"}},
-                     { "$": {"name": "FPG"}},
+                     { "$": {"name": "FGP"}},
                      { "$": {"name": "FACE"}}
                   ]
                 }
@@ -22965,28 +23142,18 @@ Input operand from xml data:
    ]
 }
 
-Output device type feature conformance string:
- "Matter & (PIN | RID | FPG | FACE)"
+Output conformance string:
+ "Matter & (PIN | RID | FGP | FACE)"
+
+The baseLevelTerms variable include terms that can not have nested terms.
+When they appear, stop recursing and return the name inside directly
 
 **Kind**: inner method of [<code>Loader API: Loader APIs</code>](#module_Loader API_ Loader APIs)  
-**Returns**: The feature conformance string.  
+**Returns**: The conformance string.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | operand | <code>\*</code> | The operand to be parsed. |
-
-<a name="module_Loader API_ Loader APIs..parseAndOrConformanceTerms"></a>
-
-### Loader API: Loader APIs~parseAndOrConformanceTerms(operand, joinChar) ⇒
-Helper function to parse andTerm or orTerm from xml data
-
-**Kind**: inner method of [<code>Loader API: Loader APIs</code>](#module_Loader API_ Loader APIs)  
-**Returns**: feature conformance string  
-
-| Param | Type |
-| --- | --- |
-| operand | <code>\*</code> | 
-| joinChar | <code>\*</code> | 
 
 <a name="module_Loader API_ Loader APIs..parseUiOptions"></a>
 
@@ -23410,8 +23577,7 @@ This module provides the APIs for ZCL/Data-Model loading.
     * [~parseManufacturerData(db, ctx)](#module_Loader API_ Loader APIs..parseManufacturerData) ⇒
     * [~parseProfilesData(db, ctx)](#module_Loader API_ Loader APIs..parseProfilesData) ⇒
     * [~parseFeatureFlags(db, packageId, featureFlags)](#module_Loader API_ Loader APIs..parseFeatureFlags) ⇒
-    * [~parseFeatureConformance(operand)](#module_Loader API_ Loader APIs..parseFeatureConformance) ⇒
-    * [~parseAndOrConformanceTerms(operand, joinChar)](#module_Loader API_ Loader APIs..parseAndOrConformanceTerms) ⇒
+    * [~parseConformanceFromXML(operand)](#module_Loader API_ Loader APIs..parseConformanceFromXML) ⇒
     * [~parseUiOptions(db, packageId, featureFlags)](#module_Loader API_ Loader APIs..parseUiOptions) ⇒
     * [~parseOptions(db)](#module_Loader API_ Loader APIs..parseOptions) ⇒
     * [~parseTextOptions(db, pkgRef, textOptions)](#module_Loader API_ Loader APIs..parseTextOptions) ⇒
@@ -24762,10 +24928,11 @@ Key/velues of the object itself, end up in CODE/LABEL combinations.
 | packageId | <code>\*</code> | 
 | featureFlags | <code>\*</code> | 
 
-<a name="module_Loader API_ Loader APIs..parseFeatureConformance"></a>
+<a name="module_Loader API_ Loader APIs..parseConformanceFromXML"></a>
 
-### Loader API: Loader APIs~parseFeatureConformance(operand) ⇒
-Parses feature conformance or an operand in feature conformance recursively from xml data.
+### Loader API: Loader APIs~parseConformanceFromXML(operand) ⇒
+Parses conformance or an operand in conformance recursively from xml data.
+The conformance could come from features, attributes, or commands
 
 An example of parsing the conformance of 'User' device type feature:
 
@@ -24780,7 +24947,7 @@ Input operand from xml data:
                 { "feature": [
                      { "$": {"name": "PIN"}},
                      { "$": {"name": "RID"}},
-                     { "$": {"name": "FPG"}},
+                     { "$": {"name": "FGP"}},
                      { "$": {"name": "FACE"}}
                   ]
                 }
@@ -24791,28 +24958,18 @@ Input operand from xml data:
    ]
 }
 
-Output device type feature conformance string:
- "Matter & (PIN | RID | FPG | FACE)"
+Output conformance string:
+ "Matter & (PIN | RID | FGP | FACE)"
+
+The baseLevelTerms variable include terms that can not have nested terms.
+When they appear, stop recursing and return the name inside directly
 
 **Kind**: inner method of [<code>Loader API: Loader APIs</code>](#module_Loader API_ Loader APIs)  
-**Returns**: The feature conformance string.  
+**Returns**: The conformance string.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | operand | <code>\*</code> | The operand to be parsed. |
-
-<a name="module_Loader API_ Loader APIs..parseAndOrConformanceTerms"></a>
-
-### Loader API: Loader APIs~parseAndOrConformanceTerms(operand, joinChar) ⇒
-Helper function to parse andTerm or orTerm from xml data
-
-**Kind**: inner method of [<code>Loader API: Loader APIs</code>](#module_Loader API_ Loader APIs)  
-**Returns**: feature conformance string  
-
-| Param | Type |
-| --- | --- |
-| operand | <code>\*</code> | 
-| joinChar | <code>\*</code> | 
 
 <a name="module_Loader API_ Loader APIs..parseUiOptions"></a>
 
@@ -25236,8 +25393,7 @@ This module provides the APIs for for common functionality related to loading.
     * [~parseManufacturerData(db, ctx)](#module_Loader API_ Loader APIs..parseManufacturerData) ⇒
     * [~parseProfilesData(db, ctx)](#module_Loader API_ Loader APIs..parseProfilesData) ⇒
     * [~parseFeatureFlags(db, packageId, featureFlags)](#module_Loader API_ Loader APIs..parseFeatureFlags) ⇒
-    * [~parseFeatureConformance(operand)](#module_Loader API_ Loader APIs..parseFeatureConformance) ⇒
-    * [~parseAndOrConformanceTerms(operand, joinChar)](#module_Loader API_ Loader APIs..parseAndOrConformanceTerms) ⇒
+    * [~parseConformanceFromXML(operand)](#module_Loader API_ Loader APIs..parseConformanceFromXML) ⇒
     * [~parseUiOptions(db, packageId, featureFlags)](#module_Loader API_ Loader APIs..parseUiOptions) ⇒
     * [~parseOptions(db)](#module_Loader API_ Loader APIs..parseOptions) ⇒
     * [~parseTextOptions(db, pkgRef, textOptions)](#module_Loader API_ Loader APIs..parseTextOptions) ⇒
@@ -26588,10 +26744,11 @@ Key/velues of the object itself, end up in CODE/LABEL combinations.
 | packageId | <code>\*</code> | 
 | featureFlags | <code>\*</code> | 
 
-<a name="module_Loader API_ Loader APIs..parseFeatureConformance"></a>
+<a name="module_Loader API_ Loader APIs..parseConformanceFromXML"></a>
 
-### Loader API: Loader APIs~parseFeatureConformance(operand) ⇒
-Parses feature conformance or an operand in feature conformance recursively from xml data.
+### Loader API: Loader APIs~parseConformanceFromXML(operand) ⇒
+Parses conformance or an operand in conformance recursively from xml data.
+The conformance could come from features, attributes, or commands
 
 An example of parsing the conformance of 'User' device type feature:
 
@@ -26606,7 +26763,7 @@ Input operand from xml data:
                 { "feature": [
                      { "$": {"name": "PIN"}},
                      { "$": {"name": "RID"}},
-                     { "$": {"name": "FPG"}},
+                     { "$": {"name": "FGP"}},
                      { "$": {"name": "FACE"}}
                   ]
                 }
@@ -26617,28 +26774,18 @@ Input operand from xml data:
    ]
 }
 
-Output device type feature conformance string:
- "Matter & (PIN | RID | FPG | FACE)"
+Output conformance string:
+ "Matter & (PIN | RID | FGP | FACE)"
+
+The baseLevelTerms variable include terms that can not have nested terms.
+When they appear, stop recursing and return the name inside directly
 
 **Kind**: inner method of [<code>Loader API: Loader APIs</code>](#module_Loader API_ Loader APIs)  
-**Returns**: The feature conformance string.  
+**Returns**: The conformance string.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | operand | <code>\*</code> | The operand to be parsed. |
-
-<a name="module_Loader API_ Loader APIs..parseAndOrConformanceTerms"></a>
-
-### Loader API: Loader APIs~parseAndOrConformanceTerms(operand, joinChar) ⇒
-Helper function to parse andTerm or orTerm from xml data
-
-**Kind**: inner method of [<code>Loader API: Loader APIs</code>](#module_Loader API_ Loader APIs)  
-**Returns**: feature conformance string  
-
-| Param | Type |
-| --- | --- |
-| operand | <code>\*</code> | 
-| joinChar | <code>\*</code> | 
 
 <a name="module_Loader API_ Loader APIs..parseUiOptions"></a>
 
