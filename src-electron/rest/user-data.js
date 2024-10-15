@@ -83,12 +83,64 @@ function httpGetEndpointIds(db) {
  */
 function httpGetDeviceTypeFeatures(db) {
   return async (request, response) => {
-    let deviceTypeRefs = request.query.deviceTypeRefs
-    let deviceTypeFeatures = await queryFeature.getFeaturesByDeviceTypeRefs(
-      db,
-      deviceTypeRefs
+    let { deviceTypeRefs, endpointTypeRef } = request.query
+    if (Array.isArray(deviceTypeRefs) && deviceTypeRefs.length > 0) {
+      let deviceTypeFeatures = await queryFeature.getFeaturesByDeviceTypeRefs(
+        db,
+        deviceTypeRefs,
+        endpointTypeRef
+      )
+      response.status(StatusCodes.OK).json(deviceTypeFeatures)
+    } else {
+      response.status(StatusCodes.OK).json([])
+    }
+  }
+}
+
+/**
+ * HTTP GET: attributes and commands to be updated
+ *
+ * @param {*} db
+ * @returns callback for the express uri registration
+ */
+function httpGetElementsToUpdate(db) {
+  return async (request, response) => {
+    let sessionId = request.zapSessionId
+    let { featureData, featureMap, endpointId } = request.query
+    featureData = JSON.parse(featureData)
+    featureMap = JSON.parse(featureMap)
+    let { endpointTypeClusterId, deviceTypeClusterId } = featureData
+    let elements = {}
+    elements.attributes =
+      await queryAttribute.selectAttributesByEndpointTypeClusterId(
+        db,
+        endpointTypeClusterId
+      )
+    elements.commands =
+      await queryCommand.selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(
+        db,
+        endpointTypeClusterId,
+        deviceTypeClusterId
+      )
+    elements.commands.forEach((command) => {
+      if (command.isEnabled == null) {
+        command.isEnabled = 0
+      }
+    })
+
+    let result = queryFeature.checkElementsToUpdate(
+      elements,
+      featureMap,
+      featureData,
+      endpointId
     )
-    response.status(StatusCodes.OK).json(deviceTypeFeatures)
+    await querySessionNotification.setNotificationOnFeatureChange(
+      db,
+      sessionId,
+      result
+    )
+
+    response.status(StatusCodes.OK).json(result)
   }
 }
 
@@ -1008,6 +1060,26 @@ function httpPostDuplicateEndpointType(db) {
 }
 
 /**
+ * Update feature map attribute with given new value
+ *
+ * @param {*} db
+ * @returns status of the update
+ */
+function httpPatchUpdateBitOfFeatureMapAttribute(db) {
+  return async (request, response) => {
+    let { featureMapAttributeId, newValue } = request.body
+    let updated = await queryConfig.updateEndpointTypeAttribute(
+      db,
+      featureMapAttributeId,
+      [['defaultValue', newValue]]
+    )
+    response.status(StatusCodes.OK).json({
+      succesesful: updated > 0
+    })
+  }
+}
+
+/**
  * duplicate all clusters and attributes of an old endpoint type, using oldEndpointType id and newly created endpointType id
  *
  * @param {*} db
@@ -1143,6 +1215,10 @@ exports.get = [
   {
     uri: restApi.uri.getAllPackages,
     callback: httpGetAllPackages
+  },
+  {
+    uri: restApi.uri.elementsToUpdate,
+    callback: httpGetElementsToUpdate
   }
 ]
 
@@ -1158,5 +1234,12 @@ exports.delete = [
   {
     uri: restApi.uri.deletePackageNotification,
     callback: httpDeletePackageNotification
+  }
+]
+
+exports.patch = [
+  {
+    uri: restApi.uri.updateBitOfFeatureMapAttribute,
+    callback: httpPatchUpdateBitOfFeatureMapAttribute
   }
 ]

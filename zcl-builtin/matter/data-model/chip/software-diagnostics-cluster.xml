@@ -30,12 +30,34 @@ limitations under the License.
     <code>0x0034</code>
     <define>SOFTWARE_DIAGNOSTICS_CLUSTER</define>
     <description>The Software Diagnostics Cluster provides a means to acquire standardized diagnostics metrics that MAY be used by a Node to assist a user or Administrative Node in diagnosing potential problems.</description>
-    <attribute side="server" code="0x00" define="THREAD_METRICS" type="ARRAY" entryType="ThreadMetricsStruct" length="254" writable="false" optional="true">ThreadMetrics</attribute>
-    <attribute side="server" code="0x01" define="CURRENT_HEAP_FREE" type="INT64U" min="0x0000000000000000" max="0xFFFFFFFFFFFFFFFF" writable="false" default="0x0000000000000000" optional="true">CurrentHeapFree</attribute>
-    <attribute side="server" code="0x02" define="CURRENT_HEAP_USED" type="INT64U" min="0x0000000000000000" max="0xFFFFFFFFFFFFFFFF" writable="false" default="0x0000000000000000" optional="true">CurrentHeapUsed</attribute>
-    <attribute side="server" code="0x03" define="CURRENT_HEAP_HIGH_WATERMARK" type="INT64U" min="0x0000000000000000" max="0xFFFFFFFFFFFFFFFF" writable="false" default="0x0000000000000000" optional="true">CurrentHeapHighWatermark</attribute>
+    <features>
+      <feature bit="0" code="WTRMRK" name="Watermarks" summary="Node makes available the metrics for high watermark related to memory consumption.">
+        <optionalConform/>
+      </feature>
+    </features>
+    <attribute side="server" code="0x00" define="THREAD_METRICS" type="ARRAY" entryType="ThreadMetricsStruct" length="254" writable="false" optional="true">
+      <description>ThreadMetrics</description>
+      <optionalConform/>
+    </attribute>
+    <attribute side="server" code="0x01" define="CURRENT_HEAP_FREE" type="INT64U" min="0x0000000000000000" max="0xFFFFFFFFFFFFFFFF" writable="false" default="0x0000000000000000" optional="true">
+      <description>CurrentHeapFree</description>
+      <optionalConform/>
+    </attribute>
+    <attribute side="server" code="0x02" define="CURRENT_HEAP_USED" type="INT64U" min="0x0000000000000000" max="0xFFFFFFFFFFFFFFFF" writable="false" default="0x0000000000000000" optional="true">
+      <description>CurrentHeapUsed</description>
+      <optionalConform/>
+    </attribute>
+    <attribute side="server" code="0x03" define="CURRENT_HEAP_HIGH_WATERMARK" type="INT64U" min="0x0000000000000000" max="0xFFFFFFFFFFFFFFFF" writable="false" default="0x0000000000000000" optional="true">
+      <description>CurrentHeapHighWatermark</description>
+      <mandatoryConform>
+        <feature name="WTRMRK"/>
+      </mandatoryConform>
+    </attribute>
     <command source="client" code="0x00" name="ResetWatermarks" optional="true" cli="chip software_diagnostics resetwatermarks">
       <description>Reception of this command SHALL reset the values: The StackFreeMinimum field of the ThreadMetrics attribute, CurrentHeapHighWaterMark attribute.</description>
+      <mandatoryConform>
+        <feature name="WTRMRK"/>
+      </mandatoryConform>
     </command>
     <event side="server" code="0x00" name="SoftwareFault" priority="info" optional="true">
       <description>Indicate the last software fault that has taken place on the Node.</description>

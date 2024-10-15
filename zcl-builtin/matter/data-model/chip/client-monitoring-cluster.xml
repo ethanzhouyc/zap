@@ -30,15 +30,55 @@ limitations under the License.
         <code>0x1046</code>
         <define>CLIENT_MONITORING_CLUSTER</define>
         <description>Client Monitoring allows for ensuring that listed clients meet the required monitoring conditions on the server.</description>
-        <attribute side="server" code="0x00" define="IDLE_MODE_INTERVAL" type="INT32U" min="0x12C" max="0X5265C00" default="0x12C" writable="false" optional="false" isNullable="false">IdleModeInterval</attribute>
-        <attribute side="server" code="0x01" define="ACTIVE_MODE_INTERVAL" type="INT32U" min="0x12C" max="0X5265C00" default="0x12C" writable="false" optional="false" isNullable="false">ActiveModeInterval</attribute>
-        <attribute side="server" code="0x02" define="ACTIVE_MODE_THRESHOLD" type="INT16U" min="0x12C" max="0xEA60" default="0xFA0" writable="false" optional="false" isNullable="false">ActiveModeThreshold</attribute>
+        
+        <features>
+            <feature bit="0" code="CIP" name="CheckInProtocolSupport" summary="Device supports attributes and commands for the Check-In Protocol support.">
+            <otherwiseConform>
+                <mandatoryConform>
+                    <feature name="LITS"/>
+                </mandatoryConform>
+                <optionalConform/>
+            </otherwiseConform>
+            </feature>
+            <feature bit="1" code="UAT" name="UserActiveModeTrigger" summary="Device supports the user active mode trigger feature.">
+            <otherwiseConform>
+                <mandatoryConform>
+                    <feature name="LITS"/>
+                </mandatoryConform>
+                <optionalConform/>
+            </otherwiseConform>
+            </feature>
+            <feature bit="2" code="LITS" name="LongIdleTimeSupport" summary="Device supports operating as a Long Idle Time ICD.">
+                <optionalConform/>
+            </feature>
+        </features>
+        
+        <attribute side="server" code="0x00" define="IDLE_MODE_INTERVAL" type="INT32U" min="0x12C" max="0X5265C00" default="0x12C" writable="false" optional="false" isNullable="false">
+            <description>IdleModeInterval</description>
+            <mandatoryConform/>
+        </attribute>
+        <attribute side="server" code="0x01" define="ACTIVE_MODE_INTERVAL" type="INT32U" min="0x12C" max="0X5265C00" default="0x12C" writable="false" optional="false" isNullable="false">
+            <description>ActiveModeInterval</description>
+            <mandatoryConform/>
+        </attribute>
+        <attribute side="server" code="0x02" define="ACTIVE_MODE_THRESHOLD" type="INT16U" min="0x12C" max="0xEA60" default="0xFA0" writable="false" optional="false" isNullable="false">
+            <description>ActiveModeThreshold</description>
+            <mandatoryConform/>
+        </attribute>
 
         <!-- TODO: Revisit the number of entries per fabric-->
-        <attribute side="server" code="0x03" define="EXPECTED_CLIENTS" type="ARRAY" entryType="MonitoringRegistration" length="4" writable="false" optional="false" isNullable="false">ExpectedClients</attribute>
+        <attribute side="server" code="0x03" define="EXPECTED_CLIENTS" type="ARRAY" entryType="MonitoringRegistration" length="4" writable="false" optional="false" isNullable="false">
+            <description>ExpectedClients</description>
+            <mandatoryConform>
+                <feature name="CIP"/>
+            </mandatoryConform>
+        </attribute>
 
         <command source="client" code="0x00" name="RegisterClientMonitoring" optional="false">
             <description> Register a client to the end device </description>
+            <mandatoryConform>
+                <feature name="CIP"/>
+            </mandatoryConform>
             <arg name="ClientNodeId" type="node_id"/>
             <arg name="ICid" type="INT64U"/>
             <access op="invoke" privilege="manage"/>
@@ -46,6 +86,9 @@ limitations under the License.
 
         <command source="client" code="0x01" name="UnregisterClientMonitoring" optional="false">
             <description> Unregister a client from an end device </description>
+            <mandatoryConform>
+                <feature name="CIP"/>
+            </mandatoryConform>
             <arg name="ClientNodeId" type="node_id"/>
             <arg name="ICid" type="INT64U"/>
             <access op="invoke" privilege="manage"/>
@@ -53,6 +96,12 @@ limitations under the License.
 
         <command source="client" code="0x02" name="StayAwakeRequest" optional="true">
             <description>Request the end device to stay in Active Mode for an additional ActiveModeThreshold</description>
+            <otherwiseConform>
+                <mandatoryConform>
+                    <feature name="LITS"/>
+                </mandatoryConform>
+                <optionalConform/>
+            </otherwiseConform>
             <access op="invoke" privilege="manage"/>
         </command>
     </cluster>
