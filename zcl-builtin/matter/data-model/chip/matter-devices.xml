@@ -521,7 +521,6 @@ limitations under the License.
                 <requireCommand>EnhancedStepHue</requireCommand>
                 <requireCommand>EnhancedMoveToHueAndSaturation</requireCommand>
                 <requireCommand>ColorLoopSet</requireCommand>
-                <requireCommand>StopMoveStep</requireCommand>
                 <requireCommand>MoveColorTemperature</requireCommand>
                 <requireCommand>StepColorTemperature</requireCommand>
             </include>
@@ -638,8 +637,6 @@ limitations under the License.
                     <mandatoryConform/>
                     </feature>
                 </features>
-                <requireAttribute>COLOR_CONTROL_CURRENT_HUE</requireAttribute>
-                <requireAttribute>COLOR_CONTROL_CURRENT_SATURATION</requireAttribute>
                 <requireAttribute>COLOR_CONTROL_REMAINING_TIME</requireAttribute>
                 <requireAttribute>COLOR_CONTROL_CURRENT_X</requireAttribute>
                 <requireAttribute>COLOR_CONTROL_CURRENT_Y</requireAttribute>
@@ -677,23 +674,10 @@ limitations under the License.
                 <requireAttribute>COLOR_CONTROL_COLOR_TEMP_PHYSICAL_MAX</requireAttribute>
                 <requireAttribute>COLOR_CONTROL_TEMPERATURE_LEVEL_MIN_MIREDS</requireAttribute>
                 <requireAttribute>START_UP_COLOR_TEMPERATURE_MIREDS</requireAttribute>
-                <requireCommand>MoveToHue</requireCommand>
-                <requireCommand>MoveHue</requireCommand>
-                <requireCommand>StepHue</requireCommand>
-                <requireCommand>MoveToSaturation</requireCommand>
-                <requireCommand>MoveSaturation</requireCommand>
-                <requireCommand>StepSaturation</requireCommand>
-                <requireCommand>MoveToHueAndSaturation</requireCommand>
                 <requireCommand>MoveToColor</requireCommand>
                 <requireCommand>MoveColor</requireCommand>
                 <requireCommand>StepColor</requireCommand>
                 <requireCommand>MoveToColorTemperature</requireCommand>
-                <requireCommand>EnhancedMoveToHue</requireCommand>
-                <requireCommand>EnhancedMoveHue</requireCommand>
-                <requireCommand>EnhancedStepHue</requireCommand>
-                <requireCommand>EnhancedMoveToHueAndSaturation</requireCommand>
-                <requireCommand>ColorLoopSet</requireCommand>
-                <requireCommand>StopMoveStep</requireCommand>
                 <requireCommand>MoveColorTemperature</requireCommand>
                 <requireCommand>StepColorTemperature</requireCommand>
             </include>
@@ -2084,13 +2068,7 @@ limitations under the License.
                 <requireAttribute>COLOR_CONTROL_COLOR_POINT_B_INTENSITY</requireAttribute>
                 <requireAttribute>COLOR_CONTROL_TEMPERATURE_LEVEL_MIN_MIREDS</requireAttribute>
                 <requireAttribute>START_UP_COLOR_TEMPERATURE_MIREDS</requireAttribute>
-                <requireAttribute>COLOR_CONTROL_ENHANCED_CURRENT_HUE</requireAttribute>
                 <requireAttribute>COLOR_CONTROL_ENHANCED_COLOR_MODE</requireAttribute>
-                <requireAttribute>COLOR_CONTROL_COLOR_LOOP_ACTIVE</requireAttribute>
-                <requireAttribute>COLOR_CONTROL_COLOR_LOOP_DIRECTION</requireAttribute>
-                <requireAttribute>COLOR_CONTROL_COLOR_LOOP_TIME</requireAttribute>
-                <requireAttribute>COLOR_CONTROL_COLOR_START_ENHANCED_HUE</requireAttribute>
-                <requireAttribute>COLOR_CONTROL_COLOR_STORED_ENHANCED_HUE</requireAttribute>
                 <requireAttribute>COLOR_CONTROL_COLOR_CAPABILITIES</requireAttribute>
                 <requireAttribute>COLOR_CONTROL_COLOR_TEMP_PHYSICAL_MIN</requireAttribute>
                 <requireAttribute>COLOR_CONTROL_COLOR_TEMP_PHYSICAL_MAX</requireAttribute>

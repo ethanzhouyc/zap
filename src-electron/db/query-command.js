@@ -1964,14 +1964,14 @@ async function selectNonManufacturerSpecificCommandDetailsFromAllEndpointTypesAn
  * Non-required commands are not loaded into ENDPOINT_TYPE_COMMAND table,
  * so we need to load all commands by joining DEVICE_TYPE_COMMAND table
  * @param {*} db
- * @param {*} featureCode
  * @param {*} endpointTypeClusterId
+ * @param {*} deviceTypeClusterId
  * @returns all commands in an endpoint type cluster
  */
-async function selectCommandsByDeviceTypeClusterId(
+async function selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(
   db,
-  deviceTypeClusterId,
-  endpointTypeClusterId
+  endpointTypeClusterId,
+  deviceTypeClusterId
 ) {
   let rows = await dbApi.dbAll(
     db,
@@ -2052,5 +2052,5 @@ exports.selectAllClustersWithOutgoingCommands =
   selectAllClustersWithOutgoingCommands
 exports.selectAllOutgoingCommandsForCluster =
   selectAllOutgoingCommandsForCluster
-exports.selectCommandsByDeviceTypeClusterId =
-  selectCommandsByDeviceTypeClusterId
+exports.selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId =
+  selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId
