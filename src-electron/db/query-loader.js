@@ -96,6 +96,7 @@ INSERT INTO COMMAND (
   DESCRIPTION,
   SOURCE,
   IS_OPTIONAL,
+  CONFORMANCE,
   MUST_USE_TIMED_INVOKE,
   IS_FABRIC_SCOPED,
   RESPONSE_NAME,
@@ -104,7 +105,7 @@ INSERT INTO COMMAND (
   REMOVED_IN_REF,
   IS_DEFAULT_RESPONSE_ENABLED
 ) VALUES (
-  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
   (SELECT SPEC_ID FROM SPEC WHERE CODE = ? AND PACKAGE_REF = ?),
   (SELECT SPEC_ID FROM SPEC WHERE CODE = ? AND PACKAGE_REF = ?),
   ?
@@ -145,6 +146,7 @@ INSERT OR REPLACE INTO ATTRIBUTE (
   TYPE,
   SIDE,
   DEFINE,
+  CONFORMANCE,
   MIN,
   MAX,
   MIN_LENGTH,
@@ -169,7 +171,7 @@ INSERT OR REPLACE INTO ATTRIBUTE (
   IS_CHANGE_COMITTED,
   PERSISTENCE
 ) VALUES (
-  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
   (SELECT SPEC_ID FROM SPEC WHERE CODE = ? AND PACKAGE_REF = ?),
   (SELECT SPEC_ID FROM SPEC WHERE CODE = ? AND PACKAGE_REF = ?),
   ?,
@@ -221,6 +223,7 @@ function attributeMap(clusterId, packageId, attributes) {
     attribute.type,
     attribute.side,
     attribute.define,
+    attribute.conformance,
     attribute.min,
     attribute.max,
     attribute.minLength,
@@ -291,6 +294,7 @@ function commandMap(clusterId, packageId, commands) {
     command.description,
     command.source,
     dbApi.toDbBool(command.isOptional),
+    command.conformance,
     dbApi.toDbBool(command.mustUseTimedInvoke),
     dbApi.toDbBool(command.isFabricScoped),
     command.responseName,

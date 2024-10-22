@@ -99,6 +99,7 @@ exports.map = {
       type: x.TYPE != 'array' ? x.TYPE : x.ARRAY_TYPE,
       side: x.SIDE,
       define: x.DEFINE,
+      conformance: x.CONFORMANCE,
       min: x.MIN,
       max: x.MAX,
       minLength: x.MIN_LENGTH,
@@ -195,6 +196,7 @@ exports.map = {
       description: x.DESCRIPTION,
       source: x.SOURCE,
       isOptional: dbApi.fromDbBool(x.IS_OPTIONAL),
+      conformance: x.CONFORMANCE,
       mustUseTimedInvoke: dbApi.fromDbBool(x.MUST_USE_TIMED_INVOKE),
       isFabricScoped: dbApi.fromDbBool(x.IS_FABRIC_SCOPED),
       clusterCode: x.CLUSTER_CODE,
@@ -249,16 +251,19 @@ exports.map = {
     if (x == null) return undefined
     return {
       deviceType: x.DEVICE_TYPE_NAME,
+      deviceTypeClusterId: x.DEVICE_TYPE_CLUSTER_ID,
       cluster: x.CLUSTER_NAME,
       includeServer: x.INCLUDE_SERVER,
       includeClient: x.INCLUDE_CLIENT,
       conformance: x.DEVICE_TYPE_CLUSTER_CONFORMANCE,
-      id: x.FEATURE_ID,
+      featureId: x.FEATURE_ID,
       name: x.FEATURE_NAME,
       code: x.CODE,
       bit: x.BIT,
-      default_value: x.DEFAULT_VALUE,
-      description: x.DESCRIPTION
+      description: x.DESCRIPTION,
+      endpointTypeClusterId: x.ENDPOINT_TYPE_CLUSTER_ID,
+      featureMapAttributeId: x.FEATUREMAP_ATTRIBUTE_ID,
+      featureMapValue: x.FEATUREMAP_VALUE
     }
   },
 
@@ -580,7 +585,8 @@ exports.map = {
       featureName: x.FEATURE_NAME,
       featureBit: x.FEATURE_BIT,
       clusterId: x.CLUSTER_REF,
-      composition: x.TYPE
+      composition: x.TYPE,
+      conformance: x.DEVICE_TYPE_CLUSTER_CONFORMANCE
     }
   },
   endpointTypeCluster: (x) => {
@@ -701,6 +707,33 @@ exports.map = {
       outgoing: dbApi.fromDbBool(x.OUTGOING),
       isIncoming: dbApi.fromDbBool(x.IS_INCOMING),
       isEnabled: dbApi.fromDbBool(x.IS_ENABLED)
+    }
+  },
+
+  endpointTypeClusterAttribute: (x) => {
+    if (x == null) return undefined
+    return {
+      id: x.ATTRIBUTE_ID,
+      name: x.NAME,
+      clusterRef: x.CLUSTER_REF,
+      side: x.SIDE,
+      conformance: x.CONFORMANCE,
+      reportMinInterval: x.REPORT_MIN_INTERVAL,
+      reportMaxInterval: x.REPORT_MAX_INTERVAL,
+      reportableChange: x.REPORTABLE_CHANGE,
+      included: x.INCLUDED
+    }
+  },
+
+  endpointTypeClusterCommand: (x) => {
+    if (x == null) return undefined
+    return {
+      id: x.COMMAND_ID,
+      name: x.NAME,
+      clusterRef: x.CLUSTER_REF,
+      source: x.SOURCE,
+      conformance: x.CONFORMANCE,
+      isEnabled: x.IS_ENABLED
     }
   },
 

@@ -38,19 +38,47 @@ limitations under the License.
     <client init="false" tick="false">true</client>
     <server init="false" tick="false">true</server>
     <description>Attributes and commands for selecting a mode from a list of supported options.</description>
+
+    <features>
+      <feature bit="0" code="DEPONOFF" name="OnOff" summary="Dependency with the OnOff cluster">
+        <optionalConform/>
+      </feature>
+    </features>
+
     <!-- Base data types -->
-    <attribute side="server" code="0x0000" define="MODE_DESCRIPTION" type="CHAR_STRING"                                     writable="false" optional="false" isNullable="false" length="32">Description</attribute>
-    <attribute side="server" code="0x0001" define="STANDARD_NAMESPACE" type="ENUM16"                                        writable="false" optional="false"  isNullable="true">StandardNamespace</attribute>
-    <attribute side="server" code="0x0002" define="SUPPORTED_MODES" type="ARRAY" entryType="ModeOptionStruct"               writable="false" optional="false" isNullable="false">SupportedModes</attribute>
-    <attribute side="server" code="0x0003" define="CURRENT_MODE"    type="INT8U"                                            writable="false" optional="false" isNullable="false" reportable="true">CurrentMode</attribute>
-    <attribute side="server" code="0x0004" define="START_UP_MODE"   type="INT8U"                                            writable="true" optional="true"  isNullable="true">StartUpMode</attribute>
-    <attribute side="server" code="0x0005" define="ON_MODE"         type="INT8U"                                            writable="true"  optional="true" isNullable="true">OnMode</attribute>
+    <attribute side="server" code="0x0000" define="MODE_DESCRIPTION" type="CHAR_STRING"                                     writable="false" optional="false" isNullable="false" length="32">
+      <description>Description</description>
+      <mandatoryConform/>
+    </attribute>
+    <attribute side="server" code="0x0001" define="STANDARD_NAMESPACE" type="ENUM16"                                        writable="false" optional="false"  isNullable="true">
+      <description>StandardNamespace</description>
+      <mandatoryConform/>
+    </attribute>
+    <attribute side="server" code="0x0002" define="SUPPORTED_MODES" type="ARRAY" entryType="ModeOptionStruct"               writable="false" optional="false" isNullable="false">
+      <description>SupportedModes</description>
+      <mandatoryConform/>
+    </attribute>
+    <attribute side="server" code="0x0003" define="CURRENT_MODE"    type="INT8U"                                            writable="false" optional="false" isNullable="false" reportable="true">
+      <description>CurrentMode</description>
+      <mandatoryConform/>
+    </attribute>
+    <attribute side="server" code="0x0004" define="START_UP_MODE"   type="INT8U"                                            writable="true" optional="true"  isNullable="true">
+      <description>StartUpMode</description>
+      <optionalConform/>
+    </attribute>
+    <attribute side="server" code="0x0005" define="ON_MODE"         type="INT8U"                                            writable="true"  optional="true" isNullable="true">
+      <description>OnMode</description>
+      <mandatoryConform>
+        <feature name="DEPONOFF"/>
+      </mandatoryConform>
+    </attribute>
 
     <!-- Test Commands -->
     <command source="client" code="0x00" name="ChangeToMode" optional="false">
       <description>
         On receipt of this command, if the NewMode field matches the Mode field in an entry of the SupportedModes list, the server SHALL set the CurrentMode attribute to the NewMode value, otherwise, the server SHALL respond with an INVALID_COMMAND status response.
       </description>
+      <mandatoryConform/>
       <arg name="NewMode" type="INT8U" />
     </command>
 

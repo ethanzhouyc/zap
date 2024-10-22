@@ -68,30 +68,85 @@ limitations under the License.
 
     <globalAttribute side="either" code="0xFFFD" value="5"/>
 
-    <attribute side="server" code="0x0000" define="CURRENT_LEVEL"                 type="INT8U"                isNullable="true"           writable="false" default="0x00"   optional="false">CurrentLevel</attribute>
-    <attribute side="server" code="0x0001" define="LEVEL_CONTROL_REMAINING_TIME"  type="INT16U"               min="0x0000"  max="0xFFFF"  writable="false" default="0x0000" optional="true">RemainingTime</attribute>
-    <attribute side="server" code="0x0002" define="MINIMUM_LEVEL"                 type="INT8U"                min="0x00"    max="0xFF"    writable="false" default="0x00"   optional="true">MinLevel</attribute>
-    <attribute side="server" code="0x0003" define="MAXIMUM_LEVEL"                 type="INT8U"                min="0x00"    max="0xFF"    writable="false" default="0xFE"   optional="true">MaxLevel</attribute>
-    <attribute side="server" code="0x0004" define="CURRENT_FREQUENCY"             type="INT16U"               min="0x0000"  max="0xFFFF"  writable="false" default="0x0000" optional="true">CurrentFrequency</attribute>
-    <attribute side="server" code="0x0005" define="MIN_FREQUENCY"                 type="INT16U"               min="0x0000"  max="0xFFFF"  writable="false" default="0x0000" optional="true">MinFrequency</attribute>
-    <attribute side="server" code="0x0006" define="MAX_FREQUENCY"                 type="INT16U"               min="0x0000"  max="0xFFFF"  writable="false" default="0x0000" optional="true">MaxFrequency</attribute>
+    <attribute side="server" code="0x0000" define="CURRENT_LEVEL"                 type="INT8U"                isNullable="true"           writable="false" default="0x00"   optional="false">
+      <description>CurrentLevel</description>
+      <mandatoryConform/>
+    </attribute>
+    <attribute side="server" code="0x0001" define="LEVEL_CONTROL_REMAINING_TIME"  type="INT16U"               min="0x0000"  max="0xFFFF"  writable="false" default="0x0000" optional="true">
+      <description>RemainingTime</description>
+      <mandatoryConform>
+        <feature name="LT"/>
+      </mandatoryConform>
+    </attribute>
+    <attribute side="server" code="0x0002" define="MINIMUM_LEVEL"                 type="INT8U"                min="0x00"    max="0xFF"    writable="false" default="0x00"   optional="true">
+      <description>MinLevel</description>
+      <optionalConform>
+        <notTerm>
+          <feature name="LT"/>
+        </notTerm>
+      </optionalConform>
+    </attribute>
+    <attribute side="server" code="0x0003" define="MAXIMUM_LEVEL"                 type="INT8U"                min="0x00"    max="0xFF"    writable="false" default="0xFE"   optional="true">
+      <description>MaxLevel</description>
+      <optionalConform/>
+    </attribute>
+    <attribute side="server" code="0x0004" define="CURRENT_FREQUENCY"             type="INT16U"               min="0x0000"  max="0xFFFF"  writable="false" default="0x0000" optional="true">
+      <description>CurrentFrequency</description>
+      <mandatoryConform>
+        <feature name="FQ"/>
+      </mandatoryConform>
+    </attribute>
+    <attribute side="server" code="0x0005" define="MIN_FREQUENCY"                 type="INT16U"               min="0x0000"  max="0xFFFF"  writable="false" default="0x0000" optional="true">
+      <description>MinFrequency</description>
+      <mandatoryConform>
+        <feature name="FQ"/>
+      </mandatoryConform>
+    </attribute>
+    <attribute side="server" code="0x0006" define="MAX_FREQUENCY"                 type="INT16U"               min="0x0000"  max="0xFFFF"  writable="false" default="0x0000" optional="true">
+      <description>MaxFrequency</description>
+      <mandatoryConform>
+        <feature name="FQ"/>
+      </mandatoryConform>
+    </attribute>
     
-    <attribute side="server" code="0x0010" define="ON_OFF_TRANSITION_TIME"        type="INT16U"                                         writable="true"  default="0x0000"   optional="true">OnOffTransitionTime</attribute>
-    <attribute side="server" code="0x0011" define="ON_LEVEL"                      type="INT8U"                isNullable="true"         writable="true"                     optional="false">OnLevel</attribute>
-    <attribute side="server" code="0x0012" define="ON_TRANSITION_TIME"            type="INT16U"               isNullable="true"         writable="true"                     optional="true">OnTransitionTime</attribute>
-    <attribute side="server" code="0x0013" define="OFF_TRANSITION_TIME"           type="INT16U"               isNullable="true"         writable="true"                     optional="true">OffTransitionTime</attribute>
-    <attribute side="server" code="0x0014" define="DEFAULT_MOVE_RATE"             type="INT8U"                isNullable="true"         writable="true"                     optional="true">DefaultMoveRate</attribute>
-    <attribute side="server" code="0x000F" define="OPTIONS"                       type="LevelControlOptions"  min="0x00" max="0x03"     writable="true"  default="0x00"     optional="false">Options</attribute>
+    <attribute side="server" code="0x0010" define="ON_OFF_TRANSITION_TIME"        type="INT16U"                                         writable="true"  default="0x0000"   optional="true">
+      <description>OnOffTransitionTime</description>
+      <optionalConform/>
+    </attribute>
+    <attribute side="server" code="0x0011" define="ON_LEVEL"                      type="INT8U"                isNullable="true"         writable="true"                     optional="false">
+      <description>OnLevel</description>
+      <mandatoryConform/>
+    </attribute>
+    <attribute side="server" code="0x0012" define="ON_TRANSITION_TIME"            type="INT16U"               isNullable="true"         writable="true"                     optional="true">
+      <description>OnTransitionTime</description>
+      <optionalConform/>
+    </attribute>
+    <attribute side="server" code="0x0013" define="OFF_TRANSITION_TIME"           type="INT16U"               isNullable="true"         writable="true"                     optional="true">
+      <description>OffTransitionTime</description>
+      <optionalConform/>
+    </attribute>
+    <attribute side="server" code="0x0014" define="DEFAULT_MOVE_RATE"             type="INT8U"                isNullable="true"         writable="true"                     optional="true">
+      <description>DefaultMoveRate</description>
+      <optionalConform/>
+    </attribute>
+    <attribute side="server" code="0x000F" define="OPTIONS"                       type="LevelControlOptions"  min="0x00" max="0x03"     writable="true"  default="0x00"     optional="false">
+      <description>Options</description>
+      <mandatoryConform/>
+    </attribute>
     <attribute side="server" code="0x4000" define="START_UP_CURRENT_LEVEL"        type="INT8U"                isNullable="true"         writable="true"                     optional="true">
       <description>StartUpCurrentLevel</description>
       <access op="read" role="view"/>
       <access op="write" role="manage"/>
+      <mandatoryConform>
+        <feature name="LT"/>
+      </mandatoryConform>
     </attribute>
 
     <command source="client" code="0x00" name="MoveToLevel" optional="false" cli="zcl level-control mv-to-level">
       <description>
         Command description for MoveToLevel
       </description>
+      <mandatoryConform/>
       <arg name="Level"           type="INT8U"/>
       <arg name="TransitionTime"  type="INT16U" isNullable="true"/>
       <arg name="OptionsMask"     type="LevelControlOptions"/>
@@ -102,6 +157,7 @@ limitations under the License.
       <description>
         Command description for Move
       </description>
+      <mandatoryConform/>
       <arg name="MoveMode" type="MoveMode"/>
       <arg name="Rate" type="INT8U" isNullable="true"/>
       <arg name="OptionsMask" type="LevelControlOptions"/>
@@ -112,6 +168,7 @@ limitations under the License.
       <description>
         Command description for Step
       </description>
+      <mandatoryConform/>
       <arg name="StepMode" type="StepMode"/>
       <arg name="StepSize" type="INT8U"/>
       <arg name="TransitionTime" type="INT16U" isNullable="true"/>
@@ -123,6 +180,7 @@ limitations under the License.
       <description>
         Command description for Stop
       </description>
+      <mandatoryConform/>
       <arg name="OptionsMask" type="LevelControlOptions"/>
       <arg name="OptionsOverride" type="LevelControlOptions"/>
     </command>
@@ -131,6 +189,7 @@ limitations under the License.
       <description>
         Command description for MoveToLevelWithOnOff
       </description>
+      <mandatoryConform/>
       <arg name="Level"           type="INT8U"/>
       <arg name="TransitionTime"  type="INT16U" isNullable="true"/>
       <arg name="OptionsMask"     type="LevelControlOptions"/>
@@ -141,6 +200,7 @@ limitations under the License.
       <description>
         Command description for MoveWithOnOff
       </description>
+      <mandatoryConform/>
       <arg name="MoveMode" type="MoveMode"/>
       <arg name="Rate" type="INT8U" isNullable="true"/>
       <arg name="OptionsMask" type="LevelControlOptions"/>
@@ -151,6 +211,7 @@ limitations under the License.
       <description>
         Command description for StepWithOnOff
       </description>
+      <mandatoryConform/>
       <arg name="StepMode" type="StepMode"/>
       <arg name="StepSize" type="INT8U"/>
       <arg name="TransitionTime" type="INT16U" isNullable="true"/>
@@ -162,6 +223,7 @@ limitations under the License.
       <description>
         Command description for StopWithOnOff
       </description>
+      <mandatoryConform/>
       <arg name="OptionsMask" type="LevelControlOptions"/>
       <arg name="OptionsOverride" type="LevelControlOptions"/>
     </command>
@@ -171,6 +233,9 @@ limitations under the License.
         Change the currrent frequency to the provided one, or a close
         approximation if the exact provided one is not possible.
       </description>
+      <mandatoryConform>
+        <feature name="FQ"/>
+      </mandatoryConform>
       <arg name="Frequency" type="INT16U"/>
     </command>
   </cluster>

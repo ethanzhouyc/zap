@@ -464,6 +464,7 @@ function prepareCluster(cluster, context, isExtension = false) {
         description: command.description ? command.description[0].trim() : '',
         source: command.$.source,
         isOptional: command.$.optional == 'true' ? true : false,
+        conformance: parseConformanceFromXML(command),
         mustUseTimedInvoke: command.$.mustUseTimedInvoke == 'true',
         introducedIn: command.$.introducedIn,
         removedIn: command.$.removedIn,
@@ -615,6 +616,7 @@ function prepareCluster(cluster, context, isExtension = false) {
             : attribute.$.type,
         side: attribute.$.side,
         define: attribute.$.define,
+        conformance: parseConformanceFromXML(attribute),
         min: attribute.$.min,
         max: attribute.$.max,
         minLength: 0,
@@ -702,7 +704,7 @@ function prepareCluster(cluster, context, isExtension = false) {
         bit: feature.$.bit,
         defaultValue: feature.$.default,
         description: feature.$.summary,
-        conformance: parseFeatureConformance(feature)
+        conformance: parseConformanceFromXML(feature)
       }
 
       ret.features.push(f)
@@ -1659,10 +1661,9 @@ function prepareDeviceType(deviceType) {
           }
           if ('features' in include) {
             include.features[0].feature.forEach((f) => {
-              let conformance = parseFeatureConformance(f)
               features.push({
                 code: f.$.code,
-                conformance: conformance
+                conformance: parseConformanceFromXML(f)
               })
             })
           }
@@ -2225,7 +2226,11 @@ async function parseFeatureFlags(db, packageId, featureFlags) {
 }
 
 /**
- * Parses feature conformance or an operand in feature conformance recursively from xml data.
+ * Parses conformance from XML data.
+ * The conformance could come from features, attributes, or commands.
+ *
+ * Call recursive helper function to parse conformance only if the conformance exists.
+ * Otherwise, return empty string directly
  *
  * An example of parsing the conformance of 'User' device type feature:
  *
@@ -2240,7 +2245,7 @@ async function parseFeatureFlags(db, packageId, featureFlags) {
  *                 { "feature": [
  *                      { "$": {"name": "PIN"}},
  *                      { "$": {"name": "RID"}},
- *                      { "$": {"name": "FPG"}},
+ *                      { "$": {"name": "FGP"}},
  *                      { "$": {"name": "FACE"}}
  *                   ]
  *                 }
@@ -2251,18 +2256,35 @@ async function parseFeatureFlags(db, packageId, featureFlags) {
  *    ]
  * }
  *
- * Output device type feature conformance string:
- *  "Matter & (PIN | RID | FPG | FACE)"
+ * Output conformance string:
+ *  "Matter & (PIN | RID | FGP | FACE)"
  *
- * @param {*} operand - The operand to be parsed.
- * @returns The feature conformance string.
+ * @param {*} operand
+ * @returns The conformance string
  */
-function parseFeatureConformance(operand) {
+function parseConformanceFromXML(operand) {
+  let hasConformance = Object.keys(operand).some((key) =>
+    key.includes('Conform')
+  )
+  return hasConformance ? parseConformanceRecursively(operand) : ''
+}
+
+/**
+ * helper function to parse conformance or an operand in conformance recursively
+ *
+ * The baseLevelTerms variable include terms that can not have nested terms.
+ * When they appear, stop recursing and return the name inside directly
+ *
+ * @param {*} operand
+ * @returns The conformance string.
+ */
+function parseConformanceRecursively(operand) {
+  const baseLevelTerms = ['feature', 'condition', 'attribute', 'command']
   if (operand.mandatoryConform) {
     let insideTerm = operand.mandatoryConform[0]
     // Recurse further if insideTerm is not empty
     if (insideTerm && Object.keys(insideTerm).toString() != '$') {
-      return parseFeatureConformance(operand.mandatoryConform[0])
+      return parseConformanceRecursively(operand.mandatoryConform[0])
     } else {
       return 'M'
     }
@@ -2271,65 +2293,55 @@ function parseFeatureConformance(operand) {
     // check '$' key is not the only key in the object to handle special cases
     // e.g. '<optionalConform choice="a" more="true"/>'
     if (insideTerm && Object.keys(insideTerm).toString() != '$') {
-      return `[${parseFeatureConformance(operand.optionalConform[0])}]`
+      return `[${parseConformanceRecursively(operand.optionalConform[0])}]`
     } else {
       return 'O'
     }
+  } else if (operand.otherwiseConform) {
+    return Object.entries(operand.otherwiseConform[0])
+      .map(([key, value]) => parseConformanceRecursively({ [key]: value }))
+      .join(', ')
+  } else if (operand.notTerm) {
+    let notTerms = parseConformanceRecursively(operand.notTerm[0])
+    // need to surround terms inside a notTerm with '()' if it contains multiple terms
+    // e.g. !(A | B) or !(A & B)
+    return notTerms.includes('&') || notTerms.includes('|')
+      ? `!(${notTerms})`
+      : `!${notTerms}`
+  } else if (operand.andTerm || operand.orTerm) {
+    // process andTerm and orTerm in the same logic
+    // when joining multiple orTerms inside andTerms, we need to
+    // surround them with '()', vice versa for andTerms inside orTerms
+    // e.g. A & (B | C) or A | (B & C)
+    let joinChar = operand.andTerm ? '&' : '|'
+    let termKey = operand.andTerm ? 'andTerm' : 'orTerm'
+    let oppositeChar = joinChar == '&' ? '|' : '&'
+    return Object.entries(operand[termKey][0])
+      .map(([key, value]) => {
+        if (baseLevelTerms.includes(key)) {
+          return value.map((operand) => operand.$.name).join(` ${joinChar} `)
+        } else {
+          let terms = parseConformanceRecursively({ [key]: value })
+          return terms.includes(oppositeChar) ? `(${terms})` : terms
+        }
+      })
+      .join(` ${joinChar} `)
   } else if (operand.provisionalConform) {
     return 'P'
   } else if (operand.disallowConform) {
     return 'X'
   } else if (operand.deprecateConform) {
     return 'D'
-  } else if (operand.feature) {
-    return operand.feature[0].$.name
-  } else if (operand.condition) {
-    return operand.condition[0].$.name
-  } else if (operand.otherwiseConform) {
-    return Object.entries(operand.otherwiseConform[0])
-      .map(([key, value]) => parseFeatureConformance({ [key]: value }))
-      .join(', ')
-  } else if (operand.notTerm) {
-    let notTerms = parseFeatureConformance(operand.notTerm[0])
-    // need to surround notTerms with '()' if it contains multiple terms
-    // e.g. !(A | B) or !(A & B)
-    return notTerms.includes('&') || notTerms.includes('|')
-      ? `!(${notTerms})`
-      : `!${notTerms}`
-  } else if (operand.andTerm) {
-    return parseAndOrConformanceTerms(operand.andTerm, '&')
-  } else if (operand.orTerm) {
-    return parseAndOrConformanceTerms(operand.orTerm, '|')
   } else {
-    return ''
-  }
-}
-
-/**
- * Helper function to parse andTerm or orTerm from xml data
- * @param {*} operand
- * @param {*} joinChar
- * @returns feature conformance string
- */
-function parseAndOrConformanceTerms(operand, joinChar) {
-  // when joining multiple orTerms inside andTerms, we need to
-  // surround them with '()', vice versa for andTerms inside orTerms
-  // e.g. A & (B | C) or A | (B & C)
-  let oppositeChar = joinChar === '&' ? '|' : '&'
-  let oppositeTerm = joinChar === '&' ? 'orTerm' : 'andTerm'
-
-  return Object.entries(operand[0])
-    .map(([key, value]) => {
-      if (key == 'feature' || key == 'condition') {
-        return value.map((operand) => operand.$.name).join(` ${joinChar} `)
-      } else if (key == oppositeTerm) {
-        let terms = parseFeatureConformance({ [key]: value })
-        return terms.includes(oppositeChar) ? `(${terms})` : terms
-      } else {
-        return ''
+    // reach base level terms, return the name directly
+    for (const term of baseLevelTerms) {
+      if (operand[term]) {
+        return operand[term][0].$.name
       }
-    })
-    .join(` ${joinChar} `)
+    }
+    // reaching here means the term is too complex to parse
+    return 'desc'
+  }
 }
 
 /**

@@ -1096,8 +1096,8 @@ export function updateNotificationCount(state, value) {
 
 /**
  * This function will update the device type features after a new endpoint is selected
- * @param {*} state 
- * @param {*} value 
+ * @param {*} state
+ * @param {*} value
  */
 export function updateDeviceTypeFeatures(state, value) {
   state.deviceTypeFeatures = value
@@ -1125,4 +1125,39 @@ export function setDirtyState(state, isDirty) {
  */
 export function setEnabledClusters(state, clusters) {
   state.enabledClusters = clusters
+}
+
+/**
+ * Updates the entire list of device type features.
+ * @param {*} state
+ * @param {*} data
+ */
+export function setDeviceTypeFeatures(state, data) {
+  vue3Set(state.featureView, 'deviceTypeFeatures', data)
+}
+
+/**
+ * Update the list of hash of enabled device type features.
+ * @param {*} state
+ * @param {*} data
+ */
+export function updateEnabledDeviceTypeFeatures(state, data) {
+  vue3Set(state.featureView, 'enabledDeviceTypeFeatures', data)
+}
+
+/**
+ * Updates the feature map attribute for all features related to a feature map attribute id.
+ * @param {*} state
+ * @param {*} featureMapAttributeId
+ * @param {*} featureMapValue
+ */
+export function updateFeatureMapAttributeOfFeature(
+  state,
+  { featureMapAttributeId, featureMapValue }
+) {
+  state.featureView.deviceTypeFeatures.map((feature) => {
+    if (featureMapAttributeId == feature.featureMapAttributeId) {
+      feature.featureMapValue = featureMapValue
+    }
+  })
 }

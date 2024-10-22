@@ -33,6 +33,7 @@ const queryCommand = require('./query-command.js')
 const restApi = require('../../src-shared/rest-api.js')
 const _ = require('lodash')
 const notification = require('../db/query-session-notification.js')
+const queryEndpointType = require('./query-endpoint-type.js')
 
 /**
  * Promises to update the cluster include/exclude state.
@@ -222,14 +223,16 @@ async function insertOrUpdateAttributeState(
     staticAttribute.defaultValue == 0
   ) {
     let featureMapDefaultValue = staticAttribute.defaultValue
-    let mandatoryFeaturesOnEndpointTypeAndCluster =
+    let featuresOnEndpointTypeAndCluster =
       await queryDeviceType.selectDeviceTypeFeaturesByEndpointTypeIdAndClusterId(
         db,
         endpointTypeId,
         clusterRef
       )
-    let featureMapBitsToBeEnabled =
-      mandatoryFeaturesOnEndpointTypeAndCluster.map((f) => f.featureBit)
+    // only set featureMap bit to 1 for mandatory features
+    let featureMapBitsToBeEnabled = featuresOnEndpointTypeAndCluster
+      .filter((f) => f.conformance == 'M')
+      .map((f) => f.featureBit)
     featureMapBitsToBeEnabled.forEach(
       (featureBit) =>
         (featureMapDefaultValue = featureMapDefaultValue | (1 << featureBit))
