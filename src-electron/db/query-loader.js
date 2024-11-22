@@ -59,13 +59,14 @@ INSERT INTO EVENT (
   NAME,
   DESCRIPTION,
   SIDE,
+  CONFORMANCE,
   IS_OPTIONAL,
   IS_FABRIC_SENSITIVE,
   PRIORITY,
   INTRODUCED_IN_REF,
   REMOVED_IN_REF
 ) VALUES (
-  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
   (SELECT SPEC_ID FROM SPEC WHERE CODE = ? AND PACKAGE_REF = ?),
   (SELECT SPEC_ID FROM SPEC WHERE CODE = ? AND PACKAGE_REF = ?)
 )
@@ -96,6 +97,7 @@ INSERT INTO COMMAND (
   DESCRIPTION,
   SOURCE,
   IS_OPTIONAL,
+  CONFORMANCE,
   MUST_USE_TIMED_INVOKE,
   IS_FABRIC_SCOPED,
   RESPONSE_NAME,
@@ -105,7 +107,7 @@ INSERT INTO COMMAND (
   IS_DEFAULT_RESPONSE_ENABLED,
   IS_LARGE_MESSAGE
 ) VALUES (
-  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
   (SELECT SPEC_ID FROM SPEC WHERE CODE = ? AND PACKAGE_REF = ?),
   (SELECT SPEC_ID FROM SPEC WHERE CODE = ? AND PACKAGE_REF = ?),
   ?, ?
@@ -146,6 +148,7 @@ INSERT INTO ATTRIBUTE (
   TYPE,
   SIDE,
   DEFINE,
+  CONFORMANCE,
   MIN,
   MAX,
   MIN_LENGTH,
@@ -170,7 +173,7 @@ INSERT INTO ATTRIBUTE (
   IS_CHANGE_OMITTED,
   PERSISTENCE
 ) VALUES (
-  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
   (SELECT SPEC_ID FROM SPEC WHERE CODE = ? AND PACKAGE_REF = ?),
   (SELECT SPEC_ID FROM SPEC WHERE CODE = ? AND PACKAGE_REF = ?),
   ?,
@@ -222,6 +225,7 @@ function attributeMap(clusterId, packageId, attributes) {
     attribute.type,
     attribute.side,
     attribute.define,
+    attribute.conformance,
     attribute.min,
     attribute.max,
     attribute.minLength,
@@ -267,6 +271,7 @@ function eventMap(clusterId, packageId, events) {
     event.name,
     event.description,
     event.side,
+    event.conformance,
     dbApi.toDbBool(event.isOptional),
     dbApi.toDbBool(event.isFabricSensitive),
     event.priority,
@@ -294,6 +299,7 @@ function commandMap(clusterId, packageId, commands) {
     command.description,
     command.source,
     dbApi.toDbBool(command.isOptional),
+    command.conformance,
     dbApi.toDbBool(command.mustUseTimedInvoke),
     dbApi.toDbBool(command.isFabricScoped),
     command.responseName,
@@ -1151,35 +1157,73 @@ async function getEndpointCompositionIdByCode(db, deviceType) {
 }
 
 /**
- * Inserts a device composition record into the DEVICE_COMPOSITION table.
+ * Inserts device composition records for each deviceType into the DEVICE_COMPOSITION table
+ * for all endpoints in the deviceType, including endpoint-specific constraint and conformance values.
  *
  * This function constructs an SQL INSERT query to add a new record to the
- * DEVICE_COMPOSITION table. It handles the insertion of the device code,
- * endpoint composition reference, conformance, and constraint values.
+ * DEVICE_COMPOSITION table for each deviceType in each endpoint. It handles the insertion
+ * of the device code, endpoint composition reference, conformance, and constraint values.
  * Note that the "CONSTRAINT" column name is escaped with double quotes
  * to avoid conflicts with the SQL reserved keyword.
  *
  * @param {Object} db - The database connection object.
  * @param {Object} deviceType - The device type object containing the data to be inserted.
  * @param {number} endpointCompositionId - The ID of the endpoint composition.
- * @returns {Promise} A promise that resolves when the insertion is complete.
+ * @returns {Promise} A promise that resolves when all insertions are complete.
  */
 function insertDeviceComposition(db, deviceType, endpointCompositionId) {
-  const insertQuery = `
-    INSERT INTO DEVICE_COMPOSITION (CODE, ENDPOINT_COMPOSITION_REF, CONFORMANCE, DEVICE_CONSTRAINT)
-    VALUES (?, ?, ?, ?)
-  `
-  try {
-    return dbApi.dbInsert(db, insertQuery, [
-      parseInt(deviceType.childDeviceId, 16),
-      endpointCompositionId,
-      deviceType.conformance,
-      deviceType.constraint
-    ])
-  } catch (error) {
-    console.error('Error inserting device composition:', error)
-    throw error // Re-throw the error after logging it
+  // Ensure that deviceType and its necessary properties are defined
+  if (!deviceType?.composition?.endpoint) {
+    throw new Error('Invalid deviceType object or endpoint data')
   }
+
+  // Make sure 'deviceType.composition.endpoint' is always an array, even if there's only one endpoint
+  const endpoints = Array.isArray(deviceType.composition.endpoint)
+    ? deviceType.composition.endpoint
+    : [deviceType.composition.endpoint]
+
+  // Prepare an array to hold all insert queries
+  const insertQueries = []
+
+  // Iterate over all endpoints in the deviceType and their respective deviceTypes
+  for (let endpoint of endpoints) {
+    // Ensure deviceType is present and handle both single value or array
+    const deviceTypes = Array.isArray(endpoint.deviceType)
+      ? endpoint.deviceType
+      : endpoint.deviceType
+        ? [endpoint.deviceType]
+        : [] // Default to empty array if undefined
+
+    // Use the $ to get the endpoint-specific conformance and constraint values
+    const endpointConformance =
+      endpoint.endpointComposition?.endpoint?.$.conformance ||
+      deviceType.conformance
+    const endpointConstraint =
+      endpoint.endpointComposition?.endpoint?.$.constraint ||
+      deviceType.constraint
+
+    // Create insert queries for each deviceType in this endpoint and add them to the insertQueries array
+    for (let device of deviceTypes) {
+      insertQueries.push(
+        dbApi.dbInsert(
+          db,
+          `
+          INSERT INTO DEVICE_COMPOSITION (CODE, ENDPOINT_COMPOSITION_REF, CONFORMANCE, DEVICE_CONSTRAINT)
+          VALUES (?, ?, ?, ?)
+        `,
+          [
+            parseInt(device, 16), // Convert deviceType to integer, assuming it is hex
+            endpointCompositionId,
+            endpointConformance, // Use the endpoint's specific conformance if available
+            endpointConstraint // Use the endpoint's specific constraint if available
+          ]
+        )
+      )
+    }
+  }
+
+  // Return the promise for executing all queries concurrently
+  return Promise.all(insertQueries)
 }
 
 /**
