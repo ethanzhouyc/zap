@@ -3480,7 +3480,6 @@ This module provides queries for device types.
     * [~selectDeviceTypeByCodeAndName(db, packageId, code, name)](#module_DB API_ device type database access..selectDeviceTypeByCodeAndName) ⇒
     * [~selectDeviceTypeByCode(db, packageId, code, name)](#module_DB API_ device type database access..selectDeviceTypeByCode) ⇒
     * [~selectDeviceTypeClustersByDeviceTypeRef(db, deviceTypeRef)](#module_DB API_ device type database access..selectDeviceTypeClustersByDeviceTypeRef) ⇒
-    * [~selectDeviceTypeClusterIdByDeviceTypeRefAndClusterCode(db, deviceTypeRef, clusterCode)](#module_DB API_ device type database access..selectDeviceTypeClusterIdByDeviceTypeRefAndClusterCode) ⇒
     * [~selectDeviceTypeClusterByDeviceTypeClusterId(db, deviceTypeClusterId)](#module_DB API_ device type database access..selectDeviceTypeClusterByDeviceTypeClusterId) ⇒
     * [~selectDeviceTypeAttributesByDeviceTypeRef(db, deviceTypeRef)](#module_DB API_ device type database access..selectDeviceTypeAttributesByDeviceTypeRef) ⇒
     * [~selectDeviceTypeCommandsByDeviceTypeRef(db, deviceTypeRef)](#module_DB API_ device type database access..selectDeviceTypeCommandsByDeviceTypeRef) ⇒
@@ -3561,20 +3560,6 @@ Get all device type clusters from a given device type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | deviceTypeRef | <code>\*</code> | 
-
-<a name="module_DB API_ device type database access..selectDeviceTypeClusterIdByDeviceTypeRefAndClusterCode"></a>
-
-### DB API: device type database access~selectDeviceTypeClusterIdByDeviceTypeRefAndClusterCode(db, deviceTypeRef, clusterCode) ⇒
-Get device type cluster ID from device type reference and cluster code.
-
-**Kind**: inner method of [<code>DB API: device type database access</code>](#module_DB API_ device type database access)  
-**Returns**: Promise of device type cluster ID, or null if not found  
-
-| Param | Type |
-| --- | --- |
-| db | <code>\*</code> | 
-| deviceTypeRef | <code>\*</code> | 
-| clusterCode | <code>\*</code> | 
 
 <a name="module_DB API_ device type database access..selectDeviceTypeClusterByDeviceTypeClusterId"></a>
 
