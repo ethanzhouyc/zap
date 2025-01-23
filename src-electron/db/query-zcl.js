@@ -1264,6 +1264,178 @@ ORDER BY
   return rows.map(dbMapping.map.endpointTypeEvent)
 }
 
+/**
+ * Get all attributes in an endpoint type cluster
+ * Disabled attributes are not loaded into ENDPOINT_TYPE_ATTRIBUTE table
+ * when opening a ZAP file, so we need to join DEVICE_TYPE_CLUSTER table
+ *
+ * @param {*} db
+ * @param {*} endpointTyeClusterId
+ * @param {*} deviceTypeClusterId
+ * @returns all attributes in an endpoint type cluster
+ */
+async function selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(
+  db,
+  endpointTypeClusterId,
+  deviceTypeClusterId
+) {
+  let rows = await dbApi.dbAll(
+    db,
+    `
+    SELECT
+      ATTRIBUTE.ATTRIBUTE_ID,
+      ATTRIBUTE.NAME,
+      ATTRIBUTE.CLUSTER_REF,
+      ATTRIBUTE.SIDE,
+      ATTRIBUTE.CONFORMANCE,
+      ATTRIBUTE.REPORT_MIN_INTERVAL,
+      ATTRIBUTE.REPORT_MAX_INTERVAL,
+      ATTRIBUTE.REPORTABLE_CHANGE,
+      ENDPOINT_TYPE_ATTRIBUTE.INCLUDED
+    FROM
+      ATTRIBUTE
+    JOIN
+      DEVICE_TYPE_CLUSTER
+    ON
+      ATTRIBUTE.CLUSTER_REF = DEVICE_TYPE_CLUSTER.CLUSTER_REF
+    LEFT JOIN
+      ENDPOINT_TYPE_ATTRIBUTE
+    ON
+        ATTRIBUTE.ATTRIBUTE_ID = ENDPOINT_TYPE_ATTRIBUTE.ATTRIBUTE_REF
+      AND
+        ENDPOINT_TYPE_ATTRIBUTE.ENDPOINT_TYPE_CLUSTER_REF = ?
+    WHERE
+      DEVICE_TYPE_CLUSTER.DEVICE_TYPE_CLUSTER_ID = ?
+    `,
+    [endpointTypeClusterId, deviceTypeClusterId]
+  )
+  return rows.map(dbMapping.map.endpointTypeAttributeExtended)
+}
+
+/**
+ * Get all commands in an endpoint type cluster
+ * Non-required commands are not loaded into ENDPOINT_TYPE_COMMAND table,
+ * so we need to load all commands by joining DEVICE_TYPE_CLUSTER table
+ *
+ * @param {*} db
+ * @param {*} endpointTypeClusterId
+ * @param {*} deviceTypeClusterId
+ * @returns all commands in an endpoint type cluster
+ */
+async function selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(
+  db,
+  endpointTypeClusterId,
+  deviceTypeClusterId
+) {
+  let rows = await dbApi.dbAll(
+    db,
+    `
+    SELECT
+      COMMAND.COMMAND_ID,
+      COMMAND.NAME,
+      COMMAND.CLUSTER_REF,
+      COMMAND.SOURCE,
+      COMMAND.CONFORMANCE,
+      COALESCE(ENDPOINT_TYPE_COMMAND.IS_ENABLED, 0) AS IS_ENABLED
+    FROM
+      COMMAND
+    JOIN
+      DEVICE_TYPE_CLUSTER
+    ON
+      COMMAND.CLUSTER_REF = DEVICE_TYPE_CLUSTER.CLUSTER_REF
+    LEFT JOIN
+      ENDPOINT_TYPE_COMMAND
+    ON
+        COMMAND.COMMAND_ID = ENDPOINT_TYPE_COMMAND.COMMAND_REF
+      AND
+        ENDPOINT_TYPE_COMMAND.ENDPOINT_TYPE_CLUSTER_REF = ?
+    WHERE
+      DEVICE_TYPE_CLUSTER.DEVICE_TYPE_CLUSTER_ID = ?
+    `,
+    [endpointTypeClusterId, deviceTypeClusterId]
+  )
+  return rows.map(dbMapping.map.endpointTypeCommandExtended)
+}
+
+/**
+ * Get all events in an endpoint type cluster
+ * Disabled events are not loaded into ENDPOINT_TYPE_EVENT table,
+ * so we need to load all events by joining DEVICE_TYPE_CLUSTER table
+ *
+ * @param {*} db
+ * @param {*} endpointTypeClusterId
+ * @param {*} deviceTypeClusterId
+ * @returns all events in an endpoint type cluster
+ */
+async function selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(
+  db,
+  endpointTypeClusterId,
+  deviceTypeClusterId
+) {
+  let rows = await dbApi.dbAll(
+    db,
+    `
+    SELECT
+      EVENT.EVENT_ID,
+      EVENT.NAME,
+      EVENT.CLUSTER_REF,
+      EVENT.SIDE,
+      EVENT.CONFORMANCE,
+      COALESCE(ENDPOINT_TYPE_EVENT.INCLUDED, 0) AS INCLUDED
+    FROM
+      EVENT
+    JOIN
+      DEVICE_TYPE_CLUSTER
+    ON
+      EVENT.CLUSTER_REF = DEVICE_TYPE_CLUSTER.CLUSTER_REF
+    LEFT JOIN
+      ENDPOINT_TYPE_EVENT
+    ON
+        EVENT.EVENT_ID = ENDPOINT_TYPE_EVENT.EVENT_REF
+      AND
+        ENDPOINT_TYPE_EVENT.ENDPOINT_TYPE_CLUSTER_REF = ?
+    WHERE
+      DEVICE_TYPE_CLUSTER.DEVICE_TYPE_CLUSTER_ID = ?
+    `,
+    [endpointTypeClusterId, deviceTypeClusterId]
+  )
+  return rows.map(dbMapping.map.endpointTypeEventExtended)
+}
+
+/**
+ * Get all attributes, commands and events in an endpoint type cluster.
+ *
+ * @param {*} db
+ * @param {*} endpointTypeClusterId
+ * @param {*} deviceTypeClusterId
+ * @returns elements object containing all attributes, commands and events
+ * in an endpoint type cluster
+ */
+async function getEndpointTypeElements(
+  db,
+  endpointTypeClusterId,
+  deviceTypeClusterId
+) {
+  let [attributes, commands, events] = await Promise.all([
+    selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(
+      db,
+      endpointTypeClusterId,
+      deviceTypeClusterId
+    ),
+    selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(
+      db,
+      endpointTypeClusterId,
+      deviceTypeClusterId
+    ),
+    selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(
+      db,
+      endpointTypeClusterId,
+      deviceTypeClusterId
+    )
+  ])
+  return { attributes, commands, events }
+}
+
 //exports
 exports.selectClusterBitmaps = selectClusterBitmaps
 exports.selectAllBitmapFields = selectAllBitmapFields
@@ -1351,3 +1523,11 @@ exports.selectStringByName = queryString.selectStringByName
 exports.selectNumberById = queryNumber.selectNumberById
 exports.selectStructsWithClusterAssociation =
   queryStruct.selectStructsWithClusterAssociation
+
+exports.selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId =
+  selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId
+exports.selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId =
+  selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId
+exports.selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId =
+  selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId
+exports.getEndpointTypeElements = getEndpointTypeElements

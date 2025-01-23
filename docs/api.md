@@ -907,6 +907,10 @@ This module provides cache for commonly used static database queries.
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
     * [~selectEndpointTypeEventsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeEventsByEndpointId) ⇒
+    * [~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..getEndpointTypeElements) ⇒
 
 <a name="module_DB API_ zcl database access..clear"></a>
 
@@ -1638,6 +1642,69 @@ Get endpoint type events from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId) ⇒
+Get all attributes in an endpoint type cluster
+Disabled attributes are not loaded into ENDPOINT_TYPE_ATTRIBUTE table
+when opening a ZAP file, so we need to join DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all attributes in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTyeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all commands in an endpoint type cluster
+Non-required commands are not loaded into ENDPOINT_TYPE_COMMAND table,
+so we need to load all commands by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all commands in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all events in an endpoint type cluster
+Disabled events are not loaded into ENDPOINT_TYPE_EVENT table,
+so we need to load all events by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all events in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..getEndpointTypeElements"></a>
+
+### DB API: zcl database access~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all attributes, commands and events in an endpoint type cluster.
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: elements object containing all attributes, commands and events
+in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
 
 <a name="module_DB API_ DB mappings between columns and JS object keys."></a>
 
@@ -1711,6 +1778,10 @@ This module provides queries for atomic type queries.
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
     * [~selectEndpointTypeEventsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeEventsByEndpointId) ⇒
+    * [~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..getEndpointTypeElements) ⇒
 
 <a name="module_DB API_ zcl database access..clear"></a>
 
@@ -2442,6 +2513,69 @@ Get endpoint type events from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId) ⇒
+Get all attributes in an endpoint type cluster
+Disabled attributes are not loaded into ENDPOINT_TYPE_ATTRIBUTE table
+when opening a ZAP file, so we need to join DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all attributes in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTyeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all commands in an endpoint type cluster
+Non-required commands are not loaded into ENDPOINT_TYPE_COMMAND table,
+so we need to load all commands by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all commands in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all events in an endpoint type cluster
+Disabled events are not loaded into ENDPOINT_TYPE_EVENT table,
+so we need to load all events by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all events in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..getEndpointTypeElements"></a>
+
+### DB API: zcl database access~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all attributes, commands and events in an endpoint type cluster.
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: elements object containing all attributes, commands and events
+in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
 
 <a name="module_DB API_ attribute queries."></a>
 
@@ -2510,6 +2644,10 @@ This module provides queries for enums.
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
     * [~selectEndpointTypeEventsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeEventsByEndpointId) ⇒
+    * [~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..getEndpointTypeElements) ⇒
 
 <a name="module_DB API_ zcl database access..clear"></a>
 
@@ -3241,6 +3379,69 @@ Get endpoint type events from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId) ⇒
+Get all attributes in an endpoint type cluster
+Disabled attributes are not loaded into ENDPOINT_TYPE_ATTRIBUTE table
+when opening a ZAP file, so we need to join DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all attributes in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTyeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all commands in an endpoint type cluster
+Non-required commands are not loaded into ENDPOINT_TYPE_COMMAND table,
+so we need to load all commands by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all commands in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all events in an endpoint type cluster
+Disabled events are not loaded into ENDPOINT_TYPE_EVENT table,
+so we need to load all events by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all events in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..getEndpointTypeElements"></a>
+
+### DB API: zcl database access~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all attributes, commands and events in an endpoint type cluster.
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: elements object containing all attributes, commands and events
+in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
 
 <a name="module_DB API_ cluster queries."></a>
 
@@ -4748,6 +4949,10 @@ inside a single session. Things like:
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
     * [~selectEndpointTypeEventsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeEventsByEndpointId) ⇒
+    * [~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..getEndpointTypeElements) ⇒
 
 <a name="module_DB API_ zcl database access..clear"></a>
 
@@ -5479,6 +5684,69 @@ Get endpoint type events from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId) ⇒
+Get all attributes in an endpoint type cluster
+Disabled attributes are not loaded into ENDPOINT_TYPE_ATTRIBUTE table
+when opening a ZAP file, so we need to join DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all attributes in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTyeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all commands in an endpoint type cluster
+Non-required commands are not loaded into ENDPOINT_TYPE_COMMAND table,
+so we need to load all commands by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all commands in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all events in an endpoint type cluster
+Disabled events are not loaded into ENDPOINT_TYPE_EVENT table,
+so we need to load all events by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all events in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..getEndpointTypeElements"></a>
+
+### DB API: zcl database access~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all attributes, commands and events in an endpoint type cluster.
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: elements object containing all attributes, commands and events
+in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
 
 <a name="module_DB API_ session related queries."></a>
 
@@ -5598,6 +5866,10 @@ This module provides queries for enums.
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
     * [~selectEndpointTypeEventsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeEventsByEndpointId) ⇒
+    * [~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..getEndpointTypeElements) ⇒
 
 <a name="module_DB API_ zcl database access..clear"></a>
 
@@ -6329,6 +6601,69 @@ Get endpoint type events from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId) ⇒
+Get all attributes in an endpoint type cluster
+Disabled attributes are not loaded into ENDPOINT_TYPE_ATTRIBUTE table
+when opening a ZAP file, so we need to join DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all attributes in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTyeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all commands in an endpoint type cluster
+Non-required commands are not loaded into ENDPOINT_TYPE_COMMAND table,
+so we need to load all commands by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all commands in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all events in an endpoint type cluster
+Disabled events are not loaded into ENDPOINT_TYPE_EVENT table,
+so we need to load all events by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all events in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..getEndpointTypeElements"></a>
+
+### DB API: zcl database access~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all attributes, commands and events in an endpoint type cluster.
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: elements object containing all attributes, commands and events
+in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
 
 <a name="module_DB API_ zcl database access"></a>
 
@@ -6393,6 +6728,10 @@ across different query files.
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
     * [~selectEndpointTypeEventsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeEventsByEndpointId) ⇒
+    * [~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..getEndpointTypeElements) ⇒
 
 <a name="module_DB API_ zcl database access..clear"></a>
 
@@ -7124,6 +7463,69 @@ Get endpoint type events from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId) ⇒
+Get all attributes in an endpoint type cluster
+Disabled attributes are not loaded into ENDPOINT_TYPE_ATTRIBUTE table
+when opening a ZAP file, so we need to join DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all attributes in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTyeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all commands in an endpoint type cluster
+Non-required commands are not loaded into ENDPOINT_TYPE_COMMAND table,
+so we need to load all commands by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all commands in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all events in an endpoint type cluster
+Disabled events are not loaded into ENDPOINT_TYPE_EVENT table,
+so we need to load all events by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all events in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..getEndpointTypeElements"></a>
+
+### DB API: zcl database access~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all attributes, commands and events in an endpoint type cluster.
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: elements object containing all attributes, commands and events
+in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
 
 <a name="module_DB API_ zcl database access"></a>
 
@@ -7187,6 +7589,10 @@ This module provides queries for ZCL static queries.
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
     * [~selectEndpointTypeEventsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeEventsByEndpointId) ⇒
+    * [~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId) ⇒
+    * [~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId)](#module_DB API_ zcl database access..getEndpointTypeElements) ⇒
 
 <a name="module_DB API_ zcl database access..clear"></a>
 
@@ -7918,6 +8324,69 @@ Get endpoint type events from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTyeClusterId, deviceTypeClusterId) ⇒
+Get all attributes in an endpoint type cluster
+Disabled attributes are not loaded into ENDPOINT_TYPE_ATTRIBUTE table
+when opening a ZAP file, so we need to join DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all attributes in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTyeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all commands in an endpoint type cluster
+Non-required commands are not loaded into ENDPOINT_TYPE_COMMAND table,
+so we need to load all commands by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all commands in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId"></a>
+
+### DB API: zcl database access~selectEventsByEndpointTypeClusterIdAndDeviceTypeClusterId(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all events in an endpoint type cluster
+Disabled events are not loaded into ENDPOINT_TYPE_EVENT table,
+so we need to load all events by joining DEVICE_TYPE_CLUSTER table
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: all events in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..getEndpointTypeElements"></a>
+
+### DB API: zcl database access~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
+Get all attributes, commands and events in an endpoint type cluster.
+
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: elements object containing all attributes, commands and events
+in an endpoint type cluster  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeClusterId | <code>\*</code> | 
+| deviceTypeClusterId | <code>\*</code> | 
 
 <a name="module_JS API_ generator logic"></a>
 
@@ -14582,7 +15051,6 @@ This module provides the API to access zcl specific information.
     * [~httpGetSessionKeyValues(db)](#module_REST API_ user data..httpGetSessionKeyValues) ⇒
     * [~httpGetEndpointIds(db)](#module_REST API_ user data..httpGetEndpointIds) ⇒
     * [~httpGetDeviceTypeFeatures(db)](#module_REST API_ user data..httpGetDeviceTypeFeatures) ⇒
-    * [~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId)](#module_REST API_ user data..getEndpointTypeElements) ⇒
     * [~httpPostCheckConformOnFeatureUpdate(db)](#module_REST API_ user data..httpPostCheckConformOnFeatureUpdate) ⇒
     * [~httpGetRequiredElements(db)](#module_REST API_ user data..httpGetRequiredElements) ⇒
     * [~httpGetSessionNotifications(db)](#module_REST API_ user data..httpGetSessionNotifications) ⇒
@@ -14669,21 +15137,6 @@ HTTP GET: device type features
 | Param | Type |
 | --- | --- |
 | db | <code>\*</code> | 
-
-<a name="module_REST API_ user data..getEndpointTypeElements"></a>
-
-### REST API: user data~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
-Get all attributes, commands and events in an endpoint type cluster.
-
-**Kind**: inner method of [<code>REST API: user data</code>](#module_REST API_ user data)  
-**Returns**: elements object containing all attributes, commands and events
-in an endpoint type cluster  
-
-| Param | Type |
-| --- | --- |
-| db | <code>\*</code> | 
-| endpointTypeClusterId | <code>\*</code> | 
-| deviceTypeClusterId | <code>\*</code> | 
 
 <a name="module_REST API_ user data..httpPostCheckConformOnFeatureUpdate"></a>
 
@@ -15921,7 +16374,6 @@ This module provides the REST API to the user specific data.
     * [~httpGetSessionKeyValues(db)](#module_REST API_ user data..httpGetSessionKeyValues) ⇒
     * [~httpGetEndpointIds(db)](#module_REST API_ user data..httpGetEndpointIds) ⇒
     * [~httpGetDeviceTypeFeatures(db)](#module_REST API_ user data..httpGetDeviceTypeFeatures) ⇒
-    * [~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId)](#module_REST API_ user data..getEndpointTypeElements) ⇒
     * [~httpPostCheckConformOnFeatureUpdate(db)](#module_REST API_ user data..httpPostCheckConformOnFeatureUpdate) ⇒
     * [~httpGetRequiredElements(db)](#module_REST API_ user data..httpGetRequiredElements) ⇒
     * [~httpGetSessionNotifications(db)](#module_REST API_ user data..httpGetSessionNotifications) ⇒
@@ -16008,21 +16460,6 @@ HTTP GET: device type features
 | Param | Type |
 | --- | --- |
 | db | <code>\*</code> | 
-
-<a name="module_REST API_ user data..getEndpointTypeElements"></a>
-
-### REST API: user data~getEndpointTypeElements(db, endpointTypeClusterId, deviceTypeClusterId) ⇒
-Get all attributes, commands and events in an endpoint type cluster.
-
-**Kind**: inner method of [<code>REST API: user data</code>](#module_REST API_ user data)  
-**Returns**: elements object containing all attributes, commands and events
-in an endpoint type cluster  
-
-| Param | Type |
-| --- | --- |
-| db | <code>\*</code> | 
-| endpointTypeClusterId | <code>\*</code> | 
-| deviceTypeClusterId | <code>\*</code> | 
 
 <a name="module_REST API_ user data..httpPostCheckConformOnFeatureUpdate"></a>
 

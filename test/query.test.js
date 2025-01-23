@@ -22,7 +22,6 @@ const fs = require('fs')
 const dbApi = require('../src-electron/db/db-api')
 const queryZcl = require('../src-electron/db/query-zcl')
 const queryDeviceType = require('../src-electron/db/query-device-type')
-const queryAttribute = require('../src-electron/db/query-attribute')
 const queryCommand = require('../src-electron/db/query-command')
 const queryLoader = require('../src-electron/db/query-loader')
 const queryConfig = require('../src-electron/db/query-config')
@@ -645,7 +644,7 @@ describe('Endpoint Type Config Queries', () => {
             )
             if (deviceTypeCluster) {
               let deviceTypeClusterId = deviceTypeCluster.id
-              queryAttribute
+              queryZcl
                 .selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(
                   db,
                   endpointTypeClusterId,
@@ -656,7 +655,7 @@ describe('Endpoint Type Config Queries', () => {
                     expectedNumbers[clusterName][side].attributes
                   )
                 })
-              queryCommand
+              queryZcl
                 .selectCommandsByEndpointTypeClusterIdAndDeviceTypeClusterId(
                   db,
                   endpointTypeClusterId,
