@@ -1996,6 +1996,8 @@ async function jsonDataLoader(
     )
   }
 
+  console.log('a random change')
+
   await Promise.all(promisesStage1)
   await Promise.all(promisesStage2)
   await querySession.setSessionClean(db, sessionId)
