@@ -38,6 +38,8 @@ const queryConfig = require('../db/query-config.js')
 const queryFeature = require('../db/query-feature.js')
 const zclLoader = require('../zcl/zcl-loader.js')
 const generationEngine = require('../generator/generation-engine')
+const conformHelper = require('../conformance/helper-conformance.js')
+const conformChecker = require('../conformance/conform-checker.js')
 
 /**
  * Resolves with a promise that imports session key values.
@@ -2145,7 +2147,7 @@ async function setElementConformWarning(
 
   if (clusterFeatures.length > 0) {
     let deviceTypeClusterId = clusterFeatures[0].deviceTypeClusterId
-    let endpointTypeElements = await queryFeature.getEndpointTypeElements(
+    let endpointTypeElements = await conformHelper.getEndpointTypeElements(
       db,
       endpointClusterId,
       deviceTypeClusterId
@@ -2160,7 +2162,7 @@ async function setElementConformWarning(
     }
 
     // get elements that should be mandatory or unsupported based on conformance
-    let requiredElements = queryFeature.checkElementConformance(
+    let requiredElements = conformChecker.checkElementConformance(
       endpointTypeElements,
       featureMap
     )

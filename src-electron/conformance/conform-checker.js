@@ -1,0 +1,384 @@
+/**
+ *
+ *    Copyright (c) 2025 Silicon Labs
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
+/**
+ * This module provides utilities for checking if elements meet conformance requirements
+ * and generate warnings for non-conformance.
+ *
+ * @module Conformance API: check element conformance
+ */
+
+const conformEvaluator = require('./conform-expr-evaluator')
+
+/**
+ * Filter an array of elements by if any element conformance contains the term 'desc'
+ * and the feature code of the updated device type feature.
+ *
+ * @export
+ * @param {*} elements
+ * @param {*} featureCode
+ * @returns elements with conformance containing 'desc' and the feature code
+ */
+function filterRelatedDescElements(elements, featureCode) {
+  return elements.filter((element) => {
+    let terms = element.conformance.match(/[A-Za-z][A-Za-z0-9_]*/g)
+    return terms && terms.includes('desc') && terms.includes(featureCode)
+  })
+}
+
+/**
+ * Generate a warning message after processing conformance of the updated device type feature.
+ * Set flags to decide whether to show a popup warning or disable changes in the frontend.
+ *
+ * @param {*} featureData
+ * @param {*} endpointId
+ * @param {*} missingTerms
+ * @param {*} featureMap
+ * @param {*} descElements
+ * @returns warning message array, disableChange flag, and displayWarning flag
+ */
+function generateWarningMessage(
+  featureData,
+  endpointId,
+  missingTerms,
+  featureMap,
+  descElements
+) {
+  let featureName = featureData.name
+  let added = featureMap[featureData.code] ? true : false
+  let deviceTypeNames = featureData.deviceTypes.join(', ')
+  let result = {
+    warningMessage: '',
+    disableChange: true,
+    displayWarning: true
+  }
+  result.warningMessage = []
+
+  if (missingTerms.length > 0) {
+    let missingTermsString = missingTerms.join(', ')
+    result.warningMessage.push(
+      'On Endpoint ' +
+        endpointId +
+        ', feature ' +
+        featureName +
+        ' cannot be enabled as its conformance depends on non device type features ' +
+        missingTermsString +
+        ' with unknown values'
+    )
+  }
+
+  if (
+    (descElements.attributes && descElements.attributes.length > 0) ||
+    (descElements.commands && descElements.commands.length > 0) ||
+    (descElements.events && descElements.events.length > 0)
+  ) {
+    let attributeNames = descElements.attributes
+      .map((attr) => attr.name)
+      .join(', ')
+    let commandNames = descElements.commands
+      .map((command) => command.name)
+      .join(', ')
+    let eventNames = descElements.events.map((event) => event.name).join(', ')
+    result.warningMessage.push(
+      'On endpoint ' +
+        endpointId +
+        ', feature ' +
+        featureName +
+        ' cannot be enabled as ' +
+        (attributeNames ? 'attribute ' + attributeNames : '') +
+        (attributeNames && commandNames ? ', ' : '') +
+        (commandNames ? 'command ' + commandNames : '') +
+        ((attributeNames || commandNames) && eventNames ? ', ' : '') +
+        (eventNames ? 'event ' + eventNames : '') +
+        ' depend on the feature and their conformance are too complex to parse.'
+    )
+  }
+
+  if (
+    missingTerms.length == 0 &&
+    descElements.attributes.length == 0 &&
+    descElements.commands.length == 0 &&
+    descElements.events.length == 0
+  ) {
+    let conformance = conformEvaluator.evaluateConformanceExpression(
+      featureData.conformance,
+      featureMap
+    )
+    // change is not disabled, by default does not display warning
+    result.disableChange = false
+    result.displayWarning = false
+    // in this case only 1 warning message is needed
+    result.warningMessage = ''
+    if (conformance == 'notSupported') {
+      result.warningMessage =
+        'On endpoint ' +
+        endpointId +
+        ', feature ' +
+        featureName +
+        ' is enabled, but it is not supported for device type ' +
+        deviceTypeNames
+      result.displayWarning = added
+    }
+    if (conformance == 'provisional') {
+      result.warningMessage =
+        'On endpoint ' +
+        endpointId +
+        ', feature ' +
+        featureName +
+        ' is enabled, but it is still provisional for device type ' +
+        deviceTypeNames
+      result.displayWarning = added
+    }
+    if (conformance == 'mandatory') {
+      result.warningMessage =
+        'On endpoint ' +
+        endpointId +
+        ', feature ' +
+        featureName +
+        ' is disabled, but it is mandatory for device type ' +
+        deviceTypeNames
+      result.displayWarning = !added
+    }
+  }
+
+  return result
+}
+
+/**
+ * Check if elements need to be updated for correct conformance if featureData provided.
+ * Otherwise, check if elements are required or unsupported by their conformance.
+ *
+ * @export
+ * @param {*} elements
+ * @param {*} featureMap
+ * @param {*} featureData
+ * @param {*} endpointId
+ * @returns attributes, commands, and events to update, with warnings if featureData provided;
+ * required and unsupported attributes, commands, and events, with warnings if not.
+ */
+function checkElementConformance(
+  elements,
+  featureMap,
+  featureData = null,
+  endpointId = null
+) {
+  let { attributes, commands, events } = elements
+  let featureCode = featureData ? featureData.code : ''
+
+  // create a map of element names/codes to their enabled status
+  let elementMap = featureMap
+  attributes.forEach((attribute) => {
+    elementMap[attribute.name] = attribute.included
+  })
+  commands.forEach((command) => {
+    elementMap[command.name] = command.isEnabled
+  })
+  events.forEach((event) => {
+    elementMap[event.name] = event.included
+  })
+  elementMap['Matter'] = 1
+  elementMap['Zigbee'] = 0
+
+  let warningInfo = {}
+  if (featureData != null) {
+    let descElements = {}
+    descElements.attributes = filterRelatedDescElements(attributes, featureCode)
+    descElements.commands = filterRelatedDescElements(commands, featureCode)
+    descElements.events = filterRelatedDescElements(events, featureCode)
+
+    let missingTerms = conformEvaluator.checkMissingTerms(
+      featureData.conformance,
+      elementMap
+    )
+    warningInfo = generateWarningMessage(
+      featureData,
+      endpointId,
+      missingTerms,
+      featureMap,
+      descElements
+    )
+
+    if (warningInfo.disableChange) {
+      return {
+        ...warningInfo,
+        attributesToUpdate: [],
+        commandsToUpdate: [],
+        eventsToUpdate: []
+      }
+    }
+  }
+
+  // check element conformance for if they need update or are required
+  let attributesToUpdate = featureData
+    ? filterElementsToUpdate(attributes, elementMap, featureCode)
+    : filterRequiredElements(attributes, elementMap, featureMap)
+  let commandsToUpdate = featureData
+    ? filterElementsToUpdate(commands, elementMap, featureCode)
+    : filterRequiredElements(commands, elementMap, featureMap)
+  let eventsToUpdate = featureData
+    ? filterElementsToUpdate(events, elementMap, featureCode)
+    : filterRequiredElements(events, elementMap, featureMap)
+
+  let result = {
+    attributesToUpdate: attributesToUpdate,
+    commandsToUpdate: commandsToUpdate,
+    eventsToUpdate: eventsToUpdate,
+    elementMap: elementMap
+  }
+  return featureData ? { ...warningInfo, ...result } : result
+}
+
+/**
+ * Return attributes, commands, or events to be updated satisfying:
+ * (1) its conformance includes feature code of the updated feature
+ * (2) it has mandatory conformance but it is not enabled, OR,
+ * 		 it is has notSupported conformance but it is enabled
+ *
+ * @param {*} elements
+ * @param {*} elementMap
+ * @param {*} featureCode
+ * @returns elements that should be updated
+ */
+function filterElementsToUpdate(elements, elementMap, featureCode) {
+  let elementsToUpdate = []
+  elements
+    .filter((element) => element.conformance.includes(featureCode))
+    .forEach((element) => {
+      let conformance = conformEvaluator.evaluateConformanceExpression(
+        element.conformance,
+        elementMap
+      )
+      if (
+        conformance == 'mandatory' &&
+        (!elementMap[element.name] || elementMap[element.name] == 0)
+      ) {
+        element.value = true
+        elementsToUpdate.push(element)
+      }
+      if (conformance == 'notSupported' && elementMap[element.name]) {
+        element.value = false
+        elementsToUpdate.push(element)
+      }
+    })
+  return elementsToUpdate
+}
+
+/**
+ * Get warnings for element requirements that are outdated after a feature update.
+ *
+ * @param {*} featureData
+ * @param {*} elements
+ * @param {*} elementMap
+ * @returns array of outdated element warnings
+ */
+function getOutdatedElementWarning(featureData, elements, elementMap) {
+  let outdatedWarnings = []
+
+  /**
+   * Build substrings of outdated warnings and add to returned array if:
+   * (1) the element conformance includes the feature code
+   * (2) the element conformance has changed after the feature update
+   *
+   * @param {*} elementType
+   */
+  function processElements(elementType) {
+    elements[elementType].forEach((element) => {
+      if (element.conformance.includes(featureData.code)) {
+        let newConform = conformEvaluator.evaluateConformanceExpression(
+          element.conformance,
+          elementMap
+        )
+        let oldMap = { ...elementMap }
+        oldMap[featureData.code] = !oldMap[featureData.code]
+        let oldConform = conformEvaluator.evaluateConformanceExpression(
+          element.conformance,
+          oldMap
+        )
+        if (newConform != oldConform) {
+          let pattern = `${element.name} conforms to ${element.conformance} and is`
+          outdatedWarnings.push(pattern)
+        }
+      }
+    })
+  }
+
+  processElements('attributes')
+  processElements('commands')
+  processElements('events')
+
+  return outdatedWarnings
+}
+
+/**
+ * Filter required and unsupported elements based on their conformance and generate warnings.
+ * An element is required if it conforms to element(s) in elementMap and has 'mandatory' conform.
+ * An element is unsupported if it conforms to element(s) in elementMap and has 'notSupported' conform.
+ *
+ * @param {*} elements
+ * @param {*} elementMap
+ * @param {*} featureMap
+ * @returns required and not supported elements with warnings
+ */
+function filterRequiredElements(elements, elementMap, featureMap) {
+  let requiredElements = {
+    required: {},
+    notSupported: {}
+  }
+  elements.forEach((element) => {
+    let conformance = conformEvaluator.evaluateConformanceExpression(
+      element.conformance,
+      elementMap
+    )
+    let expression = element.conformance
+    let terms = expression ? expression.match(/[A-Za-z][A-Za-z0-9_]*/g) : []
+    let featureTerms = terms.filter((term) => term in featureMap).join(', ')
+    let elementTerms = terms.filter((term) => !(term in featureMap)).join(', ')
+    let conformToElement = terms.some((term) =>
+      Object.keys(elementMap).includes(term)
+    )
+
+    if (conformToElement) {
+      let conformState = ''
+      if (conformance == 'mandatory') {
+        conformState = 'mandatory'
+      }
+      if (conformance == 'notSupported') {
+        conformState = 'not supported'
+      }
+
+      // generate warning message for required and unsupported elements
+      element.warningMessage =
+        `${element.name} conforms to ${element.conformance} and is ` +
+        `${conformState}` +
+        (featureTerms ? ` based on state of feature: ${featureTerms}` : '') +
+        (featureTerms && elementTerms ? ', ' : '') +
+        (elementTerms ? `element: ${elementTerms}` : '') +
+        '.'
+      if (conformance == 'mandatory') {
+        requiredElements.required[element.id] = element.warningMessage
+      }
+      if (conformance == 'notSupported') {
+        requiredElements.notSupported[element.id] = element.warningMessage
+      }
+    }
+  })
+  return requiredElements
+}
+
+exports.checkElementConformance = checkElementConformance
+exports.filterRelatedDescElements = filterRelatedDescElements
+exports.getOutdatedElementWarning = getOutdatedElementWarning
