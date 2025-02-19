@@ -42,11 +42,11 @@ function filterRelatedDescElements(elements, featureCode) {
 
 /**
  * Generate a warning message after processing conformance of the updated device type feature.
- * Set flags to decide whether to show a popup warning or disable changes in the frontend.
+ * Set flags to decide whether to show warnings or disable changes in the frontend.
  *
  * @param {*} featureData
  * @param {*} endpointId
- * @param {*} missingTerms
+ * @param {*} elementMap
  * @param {*} featureMap
  * @param {*} descElements
  * @returns warning message array, disableChange flag, and displayWarning flag
@@ -54,9 +54,9 @@ function filterRelatedDescElements(elements, featureCode) {
 function generateWarningMessage(
   featureData,
   endpointId,
-  missingTerms,
   featureMap,
-  descElements
+  elementMap = {},
+  descElements = {}
 ) {
   let featureName = featureData.name
   let added = featureMap[featureData.code] ? true : false
@@ -68,17 +68,26 @@ function generateWarningMessage(
   }
   result.warningMessage = []
 
-  if (missingTerms.length > 0) {
-    let missingTermsString = missingTerms.join(', ')
-    result.warningMessage.push(
-      'On Endpoint ' +
-        endpointId +
-        ', feature ' +
-        featureName +
-        ' cannot be enabled as its conformance depends on non device type features ' +
-        missingTermsString +
-        ' with unknown values'
-    )
+  let warningPrefix =
+    'On endpoint ' +
+    endpointId +
+    ', cluster: ' +
+    featureData.cluster +
+    ', feature: ' +
+    featureName
+
+  let missingTerms = []
+  if (Object.keys(elementMap).length > 0) {
+    missingTerms = checkMissingTerms(featureData.conformance, elementMap)
+    if (missingTerms.length > 0) {
+      let missingTermsString = missingTerms.join(', ')
+      result.warningMessage.push(
+        warningPrefix +
+          ' cannot be enabled as its conformance depends on non device type features ' +
+          missingTermsString +
+          ' with unknown values'
+      )
+    }
   }
 
   if (
@@ -94,10 +103,7 @@ function generateWarningMessage(
       .join(', ')
     let eventNames = descElements.events.map((event) => event.name).join(', ')
     result.warningMessage.push(
-      'On endpoint ' +
-        endpointId +
-        ', feature ' +
-        featureName +
+      warningPrefix +
         ' cannot be enabled as ' +
         (attributeNames ? 'attribute ' + attributeNames : '') +
         (attributeNames && commandNames ? ', ' : '') +
@@ -110,46 +116,38 @@ function generateWarningMessage(
 
   if (
     missingTerms.length == 0 &&
-    descElements.attributes.length == 0 &&
-    descElements.commands.length == 0 &&
-    descElements.events.length == 0
+    (Object.keys(descElements).length == 0 ||
+      (descElements.attributes.length == 0 &&
+        descElements.commands.length == 0 &&
+        descElements.events.length == 0))
   ) {
-    let conformance = conformEvaluator.evaluateConformanceExpression(
+    let conformance = evaluateConformanceExpression(
       featureData.conformance,
       featureMap
     )
-    // change is not disabled, by default does not display warning
+    // if no missing terms and no desc elements, enable the feature change
     result.disableChange = false
     result.displayWarning = false
     // in this case only 1 warning message is needed
     result.warningMessage = ''
     if (conformance == 'notSupported') {
       result.warningMessage =
-        'On endpoint ' +
-        endpointId +
-        ', feature ' +
-        featureName +
-        ' is enabled, but it is not supported for device type ' +
+        warningPrefix +
+        ' should be disabled, as it is not supported for device type: ' +
         deviceTypeNames
       result.displayWarning = added
     }
     if (conformance == 'provisional') {
       result.warningMessage =
-        'On endpoint ' +
-        endpointId +
-        ', feature ' +
-        featureName +
-        ' is enabled, but it is still provisional for device type ' +
+        warningPrefix +
+        ' is enabled, but it is still provisional for device type: ' +
         deviceTypeNames
       result.displayWarning = added
     }
     if (conformance == 'mandatory') {
       result.warningMessage =
-        'On endpoint ' +
-        endpointId +
-        ', feature ' +
-        featureName +
-        ' is disabled, but it is mandatory for device type ' +
+        warningPrefix +
+        ' should be enabled, as it is mandatory for device type: ' +
         deviceTypeNames
       result.displayWarning = !added
     }
@@ -180,7 +178,7 @@ function checkElementConformance(
   let featureCode = featureData ? featureData.code : ''
 
   // create a map of element names/codes to their enabled status
-  let elementMap = featureMap
+  let elementMap = { ...featureMap }
   attributes.forEach((attribute) => {
     elementMap[attribute.name] = attribute.included
   })
@@ -200,15 +198,11 @@ function checkElementConformance(
     descElements.commands = filterRelatedDescElements(commands, featureCode)
     descElements.events = filterRelatedDescElements(events, featureCode)
 
-    let missingTerms = conformEvaluator.checkMissingTerms(
-      featureData.conformance,
-      elementMap
-    )
     warningInfo = generateWarningMessage(
       featureData,
       endpointId,
-      missingTerms,
       featureMap,
+      elementMap,
       descElements
     )
 
@@ -309,7 +303,7 @@ function getOutdatedElementWarning(featureData, elements, elementMap) {
           oldMap
         )
         if (newConform != oldConform) {
-          let pattern = `${element.name} conforms to ${element.conformance} and is`
+          let pattern = `${element.name} has mandatory conformance to ${element.conformance} and should be`
           outdatedWarnings.push(pattern)
         }
       }
@@ -345,28 +339,39 @@ function filterRequiredElements(elements, elementMap, featureMap) {
     )
     let expression = element.conformance
     let terms = expression ? expression.match(/[A-Za-z][A-Za-z0-9_]*/g) : []
-    let featureTerms = terms.filter((term) => term in featureMap).join(', ')
-    let elementTerms = terms.filter((term) => !(term in featureMap)).join(', ')
+    let featureTerms = terms
+      .filter((term) => term in featureMap)
+      .map(
+        (term) =>
+          `feature: ${term} is ${featureMap[term] ? 'enabled' : 'disabled'}`
+      )
+      .join(', ')
+    let elementTerms = terms
+      .filter((term) => !(term in featureMap))
+      .map(
+        (term) =>
+          `element: ${term} is ${elementMap[term] ? 'enabled' : 'disabled'}`
+      )
+      .join(', ')
+    let combinedTerms = [featureTerms, elementTerms].filter(Boolean).join(', ')
     let conformToElement = terms.some((term) =>
       Object.keys(elementMap).includes(term)
     )
 
     if (conformToElement) {
-      let conformState = ''
+      let suggestedState = ''
       if (conformance == 'mandatory') {
-        conformState = 'mandatory'
+        suggestedState = 'enabled'
       }
       if (conformance == 'notSupported') {
-        conformState = 'not supported'
+        suggestedState = 'disabled'
       }
 
       // generate warning message for required and unsupported elements
       element.warningMessage =
-        `${element.name} conforms to ${element.conformance} and is ` +
-        `${conformState}` +
-        (featureTerms ? ` based on state of feature: ${featureTerms}` : '') +
-        (featureTerms && elementTerms ? ', ' : '') +
-        (elementTerms ? `element: ${elementTerms}` : '') +
+        `${element.name} has mandatory conformance to ${element.conformance} ` +
+        `and should be ${suggestedState} when ` +
+        combinedTerms +
         '.'
       if (conformance == 'mandatory') {
         requiredElements.required[element.id] = element.warningMessage

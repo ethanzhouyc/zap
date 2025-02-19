@@ -470,7 +470,7 @@ and generate warnings for non-conformance.
 
 * [Conformance API: check element conformance](#module_Conformance API_ check element conformance)
     * [~filterRelatedDescElements(elements, featureCode)](#module_Conformance API_ check element conformance..filterRelatedDescElements) ⇒
-    * [~generateWarningMessage(featureData, endpointId, missingTerms, featureMap, descElements)](#module_Conformance API_ check element conformance..generateWarningMessage) ⇒
+    * [~generateWarningMessage(featureData, endpointId, elementMap, featureMap, descElements)](#module_Conformance API_ check element conformance..generateWarningMessage) ⇒
     * [~checkElementConformance(elements, featureMap, featureData, endpointId)](#module_Conformance API_ check element conformance..checkElementConformance) ⇒
     * [~filterElementsToUpdate(elements, elementMap, featureCode)](#module_Conformance API_ check element conformance..filterElementsToUpdate) ⇒
     * [~getOutdatedElementWarning(featureData, elements, elementMap)](#module_Conformance API_ check element conformance..getOutdatedElementWarning) ⇒
@@ -493,9 +493,9 @@ and the feature code of the updated device type feature.
 
 <a name="module_Conformance API_ check element conformance..generateWarningMessage"></a>
 
-### Conformance API: check element conformance~generateWarningMessage(featureData, endpointId, missingTerms, featureMap, descElements) ⇒
+### Conformance API: check element conformance~generateWarningMessage(featureData, endpointId, elementMap, featureMap, descElements) ⇒
 Generate a warning message after processing conformance of the updated device type feature.
-Set flags to decide whether to show a popup warning or disable changes in the frontend.
+Set flags to decide whether to show warnings or disable changes in the frontend.
 
 **Kind**: inner method of [<code>Conformance API: check element conformance</code>](#module_Conformance API_ check element conformance)  
 **Returns**: warning message array, disableChange flag, and displayWarning flag  
@@ -504,7 +504,7 @@ Set flags to decide whether to show a popup warning or disable changes in the fr
 | --- | --- |
 | featureData | <code>\*</code> | 
 | endpointId | <code>\*</code> | 
-| missingTerms | <code>\*</code> | 
+| elementMap | <code>\*</code> | 
 | featureMap | <code>\*</code> | 
 | descElements | <code>\*</code> | 
 

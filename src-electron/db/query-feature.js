@@ -111,7 +111,28 @@ async function getFeaturesByDeviceTypeRefs(
     `,
     arg
   )
-  return features.map(dbMapping.map.deviceTypeFeature)
+  let deviceTypeFeatures = features.map(dbMapping.map.deviceTypeFeature)
+
+  /* For a device type feature under the same endpoint and cluster, but different device types,  
+    merge their rows into one and combine their device type names into a list. */
+  let result = []
+  deviceTypeFeatures.forEach((row) => {
+    const key = `${row.endpointTypeClusterId}-${row.featureId}`
+    if (key in result) {
+      let existingRow = result[key]
+      if (!existingRow.deviceTypes.includes(row.deviceType)) {
+        existingRow.deviceTypes.push(row.deviceType)
+      }
+    } else {
+      result[key] = {
+        ...row,
+        deviceTypes: [row.deviceType]
+      }
+      delete result[key].deviceType
+    }
+  })
+
+  return Object.values(result)
 }
 
 /**
