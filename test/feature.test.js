@@ -256,7 +256,7 @@ test(
       { name: 'Element7', conformance: 'description' }
     ]
 
-    let descTerms = conformChecker.filterRelatedDescElements(elements, 'desc')
+    let descTerms = conformEvaluator.filterRelatedDescElements(elements, 'desc')
     expect(descTerms).toEqual([
       { name: 'Element1', conformance: 'desc' },
       { name: 'Element2', conformance: 'P, desc' },
@@ -266,7 +266,7 @@ test(
     ])
 
     const featureCode = 'HS'
-    let relatedDescTerms = conformChecker.filterRelatedDescElements(
+    let relatedDescTerms = conformEvaluator.filterRelatedDescElements(
       elements,
       featureCode
     )

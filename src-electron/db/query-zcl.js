@@ -1118,6 +1118,40 @@ ORDER BY
 }
 
 /**
+ *
+ * @param {*} db
+ * @param {*} endpointTypeId
+ * @param {*} clusterRef
+ * @returns TBD
+ */
+async function selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(
+  db,
+  endpointTypeId,
+  clusterRef
+) {
+  let rows = await dbApi.dbAll(
+    db,
+    `
+SELECT
+  ENDPOINT_TYPE_CLUSTER_ID,
+  ENDPOINT_TYPE_REF,
+  CLUSTER_REF,
+  SIDE,
+  ENABLED
+FROM
+  ENDPOINT_TYPE_CLUSTER
+WHERE
+  ENDPOINT_TYPE_REF = ?
+  AND CLUSTER_REF = ?
+  AND SIDE = 'server'
+  `,
+    [endpointTypeId, clusterRef]
+  )
+  let mapped = rows.map(dbMapping.map.endpointTypeCluster)
+  return mapped.length > 0 ? mapped[0].endpointTypeClusterId : null
+}
+
+/**
  * Get the endpoint type attribute details from the given endpoint type ID.
  *
  * @param {*} db
@@ -1175,6 +1209,7 @@ SELECT
   ETC.ENDPOINT_TYPE_REF,
   ETC.CLUSTER_REF,
   ETA.ATTRIBUTE_REF,
+  ETA.ENDPOINT_TYPE_ATTRIBUTE_ID,
   ETA.INCLUDED,
   ETA.STORAGE_OPTION,
   ETA.SINGLETON,
@@ -1306,6 +1341,8 @@ exports.selectAllAttributesBySide = selectAllAttributesBySide
 
 exports.selectEndpointTypeClustersByEndpointTypeId =
   selectEndpointTypeClustersByEndpointTypeId
+exports.selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef =
+  selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef
 exports.selectEndpointTypeAttributesByEndpointId =
   selectEndpointTypeAttributesByEndpointId
 exports.selectEndpointTypeAttribute = selectEndpointTypeAttribute

@@ -109,18 +109,33 @@ function httpGetDeviceTypeFeatures(db) {
 function httpPostCheckConformOnFeatureUpdate(db) {
   return async (request, response) => {
     let sessionId = request.zapSessionId
-    let { featureData, featureMap, endpointId, changeConfirmed } = request.body
-    let { endpointTypeClusterId, deviceTypeClusterId } = featureData
+    let {
+      featureData,
+      featureMap,
+      featureConformance,
+      endpointId,
+      endpointTypeId,
+      changeConfirmed
+    } = request.body
+
+    let endpointTypeClusterId =
+      await conformChecker.getEndpointTypeClusterIdFromFeatureData(
+        db,
+        featureData,
+        endpointTypeId
+      )
+
+    console.log('endpointTypeClusterId', endpointTypeClusterId)
 
     let elements = await queryEndpointType.getEndpointTypeElements(
       db,
-      endpointTypeClusterId,
-      deviceTypeClusterId
+      endpointTypeClusterId
     )
     // check element conform and return elements that need to be updated
     let result = conformChecker.checkElementConformance(
       elements,
       featureMap,
+      featureConformance,
       featureData,
       endpointId
     )
@@ -151,20 +166,25 @@ function httpPostCheckConformOnFeatureUpdate(db) {
 }
 
 /**
- * HTTP GET: required and unsupported cluster elements based on conformance
+ * HTTP POST: required and unsupported cluster elements based on conformance
  * @param {*} db
  * @returns callback for the express uri registration
  */
-function httpGetRequiredElements(db) {
+function httpPostRequiredElements(db) {
   return async (request, response) => {
-    let { featureMap, deviceTypeClusterId, endpointTypeClusterId } = JSON.parse(
-      request.query.data
-    )
-    featureMap = JSON.parse(featureMap)
+    let { featureMap, endpointTypeId, featureData, clusterRef } = request.body
+
+    let endpointTypeClusterId =
+      await conformChecker.getEndpointTypeClusterIdFromFeatureData(
+        db,
+        featureData,
+        endpointTypeId,
+        clusterRef
+      )
+
     let endpointTypeElements = await queryEndpointType.getEndpointTypeElements(
       db,
-      endpointTypeClusterId,
-      deviceTypeClusterId
+      endpointTypeClusterId
     )
     let result = conformChecker.checkElementConformance(
       endpointTypeElements,
@@ -189,10 +209,7 @@ function httpGetFeatureMapValue(db) {
       attributeId,
       clusterId
     )
-    let featureMapValue = featureMapAttribute.defaultValue
-      ? parseInt(featureMapAttribute.defaultValue)
-      : 0
-    response.status(StatusCodes.OK).json(featureMapValue)
+    response.status(StatusCodes.OK).json(featureMapAttribute)
   }
 }
 
@@ -1127,11 +1144,9 @@ function httpGetConformDataExists(db) {
  */
 function httpPostRequiredElementWarning(db) {
   return async (request, response) => {
-    let { element, contextMessage, requiredText, notSupportedText, added } =
-      request.body
     let resp = await querySessionNotification.setRequiredElementWarning(
       db,
-      { element, contextMessage, requiredText, notSupportedText, added },
+      request.body,
       request.zapSessionId
     )
     response.status(StatusCodes.OK).json(resp)
@@ -1253,6 +1268,10 @@ exports.post = [
   {
     uri: restApi.uri.requiredElementWarning,
     callback: httpPostRequiredElementWarning
+  },
+  {
+    uri: restApi.uri.requiredElements,
+    callback: httpPostRequiredElements
   }
 ]
 
@@ -1312,10 +1331,6 @@ exports.get = [
   {
     uri: restApi.uri.conformDataExists,
     callback: httpGetConformDataExists
-  },
-  {
-    uri: restApi.uri.requiredElements,
-    callback: httpGetRequiredElements
   },
   {
     uri: restApi.uri.featureMapValue,

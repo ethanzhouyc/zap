@@ -86,6 +86,7 @@ export function updateAtomics(context) {
  * @param {*} cluster
  */
 export async function updateSelectedCluster(context, cluster) {
+  console.log('updateSelectedCluster: ', cluster)
   let res = await axiosRequests.$serverGet(
     restApi.uri.zclCluster + `${cluster.id}`
   )
@@ -137,11 +138,19 @@ export function updateFeatures(context, features) {
  * @param {*} context
  * @param {*} attributes
  */
-export function updateFeatureMapValue(context, data) {
+export function updateFeatureMapAttribute(context, data) {
   axiosRequests
     .$serverGet(restApi.uri.featureMapValue, { params: data })
     .then((response) => {
-      context.commit('updateFeatureMapValue', response.data)
+      let featureMapAttribute = response.data
+      let featureMapValue = featureMapAttribute.defaultValue
+        ? parseInt(featureMapAttribute.defaultValue)
+        : 0
+      let featureMapAttributeId = featureMapAttribute.endpointTypeAttributeId
+      context.commit('updateFeatureMapAttribute', {
+        id: featureMapAttributeId,
+        value: featureMapValue
+      })
     })
 }
 
@@ -1003,9 +1012,7 @@ export async function setDeviceTypeFeatures(
       let enabledDeviceTypeFeatures = []
       deviceTypeFeatures.forEach((feature) => {
         if (feature.featureMapValue & (1 << feature.bit)) {
-          enabledDeviceTypeFeatures.push(
-            Util.cantorPair(feature.deviceTypeClusterId, feature.featureId)
-          )
+          enabledDeviceTypeFeatures.push(feature.featureId)
         }
       })
       context.commit(
@@ -1033,13 +1040,8 @@ export function updateConformDataExists(context) {
  * @returns
  */
 export function setRequiredElements(context, data) {
-  if (data.featureMap) {
-    data.featureMap = JSON.stringify(data.featureMap)
-  }
   return axiosRequests
-    .$serverGet(restApi.uri.requiredElements, {
-      params: { data: JSON.stringify(data) }
-    })
+    .$serverPost(restApi.uri.requiredElements, data)
     .then((response) => {
       context.commit('setRequiredElements', response.data)
     })

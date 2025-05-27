@@ -1275,13 +1275,11 @@ async function selectAttributeMappingsByPackageIds(db, packageIds) {
  * when opening a ZAP file, so we need to join DEVICE_TYPE_CLUSTER table
  * @param {*} db
  * @param {*} endpointTyeClusterId
- * @param {*} deviceTypeClusterId
  * @returns all attributes in an endpoint type cluster
  */
 async function selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(
   db,
-  endpointTypeClusterId,
-  deviceTypeClusterId
+  endpointTypeClusterId
 ) {
   let rows = await dbApi.dbAll(
     db,
@@ -1299,19 +1297,19 @@ async function selectAttributesByEndpointTypeClusterIdAndDeviceTypeClusterId(
     FROM
       ATTRIBUTE
     JOIN
-      DEVICE_TYPE_CLUSTER
+      ENDPOINT_TYPE_CLUSTER
     ON
-      ATTRIBUTE.CLUSTER_REF = DEVICE_TYPE_CLUSTER.CLUSTER_REF
+        ATTRIBUTE.CLUSTER_REF = ENDPOINT_TYPE_CLUSTER.CLUSTER_REF
+      AND
+        ENDPOINT_TYPE_CLUSTER.ENDPOINT_TYPE_CLUSTER_ID = ?
     LEFT JOIN
       ENDPOINT_TYPE_ATTRIBUTE
     ON
         ATTRIBUTE.ATTRIBUTE_ID = ENDPOINT_TYPE_ATTRIBUTE.ATTRIBUTE_REF
       AND
-        ENDPOINT_TYPE_ATTRIBUTE.ENDPOINT_TYPE_CLUSTER_REF = ?
-    WHERE
-      DEVICE_TYPE_CLUSTER.DEVICE_TYPE_CLUSTER_ID = ?
+        ENDPOINT_TYPE_ATTRIBUTE.ENDPOINT_TYPE_CLUSTER_REF = ENDPOINT_TYPE_CLUSTER.ENDPOINT_TYPE_CLUSTER_ID
     `,
-    [endpointTypeClusterId, deviceTypeClusterId]
+    [endpointTypeClusterId]
   )
   return rows.map(dbMapping.map.endpointTypeAttributeExtended)
 }

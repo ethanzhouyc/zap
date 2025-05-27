@@ -66,7 +66,9 @@ function parseConformanceFromXML(operand) {
   let hasConformance = Object.keys(operand).some((key) =>
     key.includes('Conform')
   )
-  return hasConformance ? parseConformanceRecursively(operand) : ''
+  return hasConformance
+    ? parseConformanceRecursively(operand)
+    : dbEnum.conformance.desc
 }
 
 /**

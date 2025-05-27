@@ -23,6 +23,8 @@
 
 const dbEnum = require('../../src-shared/db-enum')
 
+const TERM_REGEX = /[A-Za-z][A-Za-z0-9_]*/g
+
 /**
  * Evaluate the value of a boolean conformance expression that includes terms and operators.
  * A term can be an attribute, command, event, feature, or conformance abbreviation.
@@ -43,7 +45,7 @@ function evaluateConformanceExpression(expression, elementMap) {
    */
   function evaluateBooleanExpression(expr) {
     // Replace terms with their actual values from elementMap
-    expr = expr.replace(/[A-Za-z][A-Za-z0-9_]*/g, (term) => {
+    expr = expr.replace(TERM_REGEX, (term) => {
       if (elementMap[term]) {
         return 'true'
       } else {
@@ -76,7 +78,7 @@ function evaluateConformanceExpression(expression, elementMap) {
   let parts = expression.split(',')
   // if any term is desc, the conformance is too complex to parse
   for (let part of parts) {
-    let terms = part.match(/[A-Za-z][A-Za-z0-9_]*/g)
+    let terms = getTermsFromExpression(part)
     if (terms && terms.includes(dbEnum.conformance.desc)) {
       return dbEnum.conformance.desc
     }
@@ -126,7 +128,7 @@ function evaluateConformanceExpression(expression, elementMap) {
  * @returns all missing terms in an array
  */
 function checkMissingTerms(expression, elementMap) {
-  let terms = expression.match(/[A-Za-z][A-Za-z0-9_]*/g)
+  let terms = getTermsFromExpression(expression)
   let missingTerms = []
   let abbreviations = Object.values(dbEnum.conformance)
   for (let term of terms) {
@@ -145,10 +147,103 @@ function checkMissingTerms(expression, elementMap) {
  * @returns true if the expression contains the term, false otherwise
  */
 function checkIfExpressionHasTerm(expression, term) {
-  let terms = expression.match(/[A-Za-z][A-Za-z0-9_]*/g)
+  let terms = expression.match(TERM_REGEX)
   return terms && terms.includes(term)
+}
+
+/**
+ *
+ * @param {*} expression
+ * @returns TBD
+ */
+function getTermsFromExpression(expression) {
+  let terms = expression.match(TERM_REGEX)
+  return terms ? terms : []
+}
+
+/**
+ *
+ * @export
+ * @param {*} elements
+ * @param {*} featureCodes
+ * @returns elements with conformance containing 'desc' and any of the feature codes
+ */
+function filterRelatedDescElements(elements, featureCodes) {
+  return elements.filter((element) => {
+    let terms = getTermsFromExpression(element.conformance)
+    return (
+      terms &&
+      terms.includes(dbEnum.conformance.desc) &&
+      featureCodes.some((code) => terms.includes(code))
+    )
+  })
+}
+
+/**
+ *
+ * @param {*} featureConformance
+ * @param {*} elementMap
+ * @param {*} updatedKeys - List of code of features that have already been updated
+ * @param {*} updatedFeatures - Object of updated features and their enabled status in format of: [{ key: true }]
+ * @returns {{ updatedFeatures: Object, updatedKeys: Array }}
+ */
+function fixFeatureConformanceRecursively(
+  featureConformance,
+  elementMap,
+  updatedKeys = [],
+  updatedFeatures = {}
+) {
+  console.log('fixFeatureConformanceRecursively')
+  let changed = false
+
+  for (let [key, value] of Object.entries(featureConformance)) {
+    if (updatedKeys.includes(key)) {
+      continue
+    }
+
+    let terms = getTermsFromExpression(value)
+    let dependantOnUpdatedKeys = terms.some((term) =>
+      updatedKeys.includes(term)
+    )
+    if (!dependantOnUpdatedKeys) {
+      continue
+    }
+
+    let conformance = evaluateConformanceExpression(value, elementMap)
+    console.log(`Conformance for ${key}: ${conformance}: ${value}`)
+
+    if (conformance == 'mandatory' && !elementMap[key]) {
+      console.log(`Adding mandatory conformance for ${key}`)
+      elementMap[key] = true
+      updatedKeys.push(key)
+      updatedFeatures[key] = true
+      changed = true
+    }
+
+    if (conformance == 'notSupported' && elementMap[key]) {
+      console.log(`Removing not supported conformance for ${key}`)
+      elementMap[key] = false
+      updatedKeys.push(key)
+      updatedFeatures[key] = false
+      changed = true
+    }
+  }
+
+  if (changed) {
+    return fixFeatureConformanceRecursively(
+      featureConformance,
+      elementMap,
+      updatedKeys,
+      updatedFeatures
+    )
+  }
+
+  return { updatedFeatures, updatedKeys }
 }
 
 exports.evaluateConformanceExpression = evaluateConformanceExpression
 exports.checkMissingTerms = checkMissingTerms
 exports.checkIfExpressionHasTerm = checkIfExpressionHasTerm
+exports.fixFeatureConformanceRecursively = fixFeatureConformanceRecursively
+exports.filterRelatedDescElements = filterRelatedDescElements
+exports.getTermsFromExpression = getTermsFromExpression

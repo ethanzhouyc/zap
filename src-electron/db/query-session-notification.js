@@ -229,6 +229,7 @@ async function setNotificationOnFeatureChange(db, sessionId, result) {
  * @returns response of setting warning notification
  */
 async function setRequiredElementWarning(db, data, sessionId) {
+  console.log('data in setRequiredElementWarning', data)
   let { element, contextMessage, requiredText, notSupportedText, added } = data
 
   // delete previous warning before setting new one

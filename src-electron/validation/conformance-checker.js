@@ -26,25 +26,8 @@ const conformEvaluator = require('./conformance-expression-evaluator')
 const queryFeature = require('../db/query-feature')
 const querySessionNotice = require('../db/query-session-notification')
 const queryEndpointType = require('../db/query-endpoint-type')
-const dbEnum = require('../../src-shared/db-enum')
-
-/**
- *
- * @export
- * @param {*} elements
- * @param {*} featureCode
- * @returns elements with conformance containing 'desc' and the feature code
- */
-function filterRelatedDescElements(elements, featureCode) {
-  return elements.filter((element) => {
-    let terms = element.conformance.match(/[A-Za-z][A-Za-z0-9_]*/g)
-    return (
-      terms &&
-      terms.includes(dbEnum.conformance.desc) &&
-      terms.includes(featureCode)
-    )
-  })
-}
+const queryZcl = require('../db/query-zcl')
+// const dbEnum = require('../../src-shared/db-enum')
 
 /**
  * Generate a warning message after processing conformance of the updated device type feature.
@@ -66,7 +49,8 @@ function generateWarningMessage(
 ) {
   let featureName = featureData.name
   let added = featureMap[featureData.code] ? true : false
-  let deviceTypeNames = featureData.deviceTypes.join(', ')
+  let deviceTypeNames =
+    featureData.type == 'deviceType' ? featureData.deviceTypes.join(', ') : ''
   let result = {
     warningMessage: '',
     disableChange: true,
@@ -79,7 +63,7 @@ function generateWarningMessage(
     `feature: ${featureName} (bit ${featureData.bit} in featureMap attribute)`
 
   let missingTerms = []
-  if (Object.keys(elementMap).length > 0) {
+  if (Object.keys(elementMap).length > 0 && featureData.conformance) {
     missingTerms = conformEvaluator.checkMissingTerms(
       featureData.conformance,
       elementMap
@@ -168,6 +152,7 @@ function generateWarningMessage(
  * @export
  * @param {*} elements
  * @param {*} featureMap
+ * @param {*} featureConformance
  * @param {*} featureData
  * @param {*} endpointId
  * @returns attributes, commands, and events to update, with warnings if featureData provided;
@@ -176,12 +161,14 @@ function generateWarningMessage(
 function checkElementConformance(
   elements,
   featureMap,
+  featureConformance = null,
   featureData = null,
   endpointId = null
 ) {
+  console.log('checkElementConformance')
+  //console.log('elements', elements)
   let { attributes, commands, events } = elements
-  let featureCode = featureData ? featureData.code : ''
-
+  // console.log('attributes', attributes)
   // create a map of element names/codes to their enabled status
   let elementMap = { ...featureMap }
   attributes.forEach((attribute) => {
@@ -193,15 +180,42 @@ function checkElementConformance(
   events.forEach((event) => {
     elementMap[event.name] = event.included
   })
-  elementMap['Matter'] = 1
-  elementMap['Zigbee'] = 0
+  elementMap['Matter'] = true
+  elementMap['Zigbee'] = false
+
+  console.log('elementMap', elementMap)
+
+  let featuresToUpdate = []
+  let featureCodes = []
+  if (featureConformance && featureData) {
+    featureCodes.push(featureData.code)
+    let result = conformEvaluator.fixFeatureConformanceRecursively(
+      featureConformance,
+      elementMap,
+      featureCodes
+    )
+    featureCodes = result.updatedKeys
+    featuresToUpdate = result.updatedFeatures
+  }
+  // console.log('featuresToUpdate', featuresToUpdate)
+  // console.log('featureCodes', featureCodes)
+  // console.log('elementMap after fix', elementMap)
 
   let warningInfo = {}
   if (featureData != null) {
     let descElements = {}
-    descElements.attributes = filterRelatedDescElements(attributes, featureCode)
-    descElements.commands = filterRelatedDescElements(commands, featureCode)
-    descElements.events = filterRelatedDescElements(events, featureCode)
+    descElements.attributes = conformEvaluator.filterRelatedDescElements(
+      attributes,
+      featureCodes
+    )
+    descElements.commands = conformEvaluator.filterRelatedDescElements(
+      commands,
+      featureCodes
+    )
+    descElements.events = conformEvaluator.filterRelatedDescElements(
+      events,
+      featureCodes
+    )
 
     warningInfo = generateWarningMessage(
       featureData,
@@ -216,26 +230,28 @@ function checkElementConformance(
         ...warningInfo,
         attributesToUpdate: [],
         commandsToUpdate: [],
-        eventsToUpdate: []
+        eventsToUpdate: [],
+        featuresToUpdate: []
       }
     }
   }
 
   // check element conformance for if they need update or are required
   let attributesToUpdate = featureData
-    ? filterElementsToUpdate(attributes, elementMap, featureCode)
+    ? filterElementsToUpdate(attributes, elementMap, featureCodes)
     : filterRequiredElements(attributes, elementMap, featureMap)
   let commandsToUpdate = featureData
-    ? filterElementsToUpdate(commands, elementMap, featureCode)
+    ? filterElementsToUpdate(commands, elementMap, featureCodes)
     : filterRequiredElements(commands, elementMap, featureMap)
   let eventsToUpdate = featureData
-    ? filterElementsToUpdate(events, elementMap, featureCode)
+    ? filterElementsToUpdate(events, elementMap, featureCodes)
     : filterRequiredElements(events, elementMap, featureMap)
 
   let result = {
     attributesToUpdate: attributesToUpdate,
     commandsToUpdate: commandsToUpdate,
     eventsToUpdate: eventsToUpdate,
+    featuresToUpdate: featuresToUpdate,
     elementMap: elementMap
   }
   return featureData ? { ...warningInfo, ...result } : result
@@ -249,22 +265,23 @@ function checkElementConformance(
  *
  * @param {*} elements
  * @param {*} elementMap
- * @param {*} featureCode
+ * @param {*} featureCodes
  * @returns elements that should be updated
  */
-function filterElementsToUpdate(elements, elementMap, featureCode) {
+function filterElementsToUpdate(elements, elementMap, featureCodes) {
   let elementsToUpdate = []
   elements
-    .filter((element) => element.conformance.includes(featureCode))
+    .filter((element) =>
+      conformEvaluator
+        .getTermsFromExpression(element.conformance)
+        .some((term) => featureCodes.includes(term))
+    )
     .forEach((element) => {
       let conformance = conformEvaluator.evaluateConformanceExpression(
         element.conformance,
         elementMap
       )
-      if (
-        conformance == 'mandatory' &&
-        (!elementMap[element.name] || elementMap[element.name] == 0)
-      ) {
+      if (conformance == 'mandatory' && !elementMap[element.name]) {
         element.value = true
         elementsToUpdate.push(element)
       }
@@ -411,6 +428,7 @@ async function setConformanceWarnings(
   cluster,
   sessionId
 ) {
+  console.log('setConformanceWarnings')
   let deviceTypeFeatures = await queryFeature.getFeaturesByDeviceTypeRefs(
     db,
     deviceTypeRefs,
@@ -421,11 +439,9 @@ async function setConformanceWarnings(
   )
 
   if (clusterFeatures.length > 0) {
-    let deviceTypeClusterId = clusterFeatures[0].deviceTypeClusterId
     let endpointTypeElements = await queryEndpointType.getEndpointTypeElements(
       db,
-      endpointClusterId,
-      deviceTypeClusterId
+      endpointClusterId
     )
 
     let featureMapVal = clusterFeatures[0].featureMapValue
@@ -521,7 +537,33 @@ async function setConformanceWarnings(
   return false
 }
 
+/**
+ *
+ * @param {*} db
+ * @param {*} featureData
+ * @param {*} endpointTypeId
+ * @returns TDB
+ */
+async function getEndpointTypeClusterIdFromFeatureData(
+  db,
+  featureData,
+  endpointTypeId,
+  clusterRef
+) {
+  if (featureData) {
+    clusterRef = featureData.clusterRef
+  }
+  let endpointTypeClusterId =
+    await queryZcl.selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(
+      db,
+      endpointTypeId,
+      clusterRef
+    )
+  return endpointTypeClusterId
+}
+
 exports.checkElementConformance = checkElementConformance
-exports.filterRelatedDescElements = filterRelatedDescElements
 exports.getOutdatedElementWarning = getOutdatedElementWarning
 exports.setConformanceWarnings = setConformanceWarnings
+exports.getEndpointTypeClusterIdFromFeatureData =
+  getEndpointTypeClusterIdFromFeatureData

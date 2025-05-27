@@ -916,6 +916,7 @@ This module provides cache for commonly used static database queries.
     * [~selectAllAttributes(db, packageIds)](#module_DB API_ zcl database access..selectAllAttributes) ⇒
     * [~selectAllAttributesBySide(db, side, packageId)](#module_DB API_ zcl database access..selectAllAttributesBySide) ⇒
     * [~selectEndpointTypeClustersByEndpointTypeId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeClustersByEndpointTypeId) ⇒
+    * [~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef)](#module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef) ⇒
     * [~selectEndpointTypeAttributesByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId) ⇒
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
@@ -1645,6 +1646,18 @@ Get the endpoint type cluster details from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef"></a>
+
+### DB API: zcl database access~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef) ⇒
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: TBD  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeId | <code>\*</code> | 
+| clusterRef | <code>\*</code> | 
 
 <a name="module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId"></a>
 
@@ -1771,6 +1784,7 @@ This module provides queries for atomic type queries.
     * [~selectAllAttributes(db, packageIds)](#module_DB API_ zcl database access..selectAllAttributes) ⇒
     * [~selectAllAttributesBySide(db, side, packageId)](#module_DB API_ zcl database access..selectAllAttributesBySide) ⇒
     * [~selectEndpointTypeClustersByEndpointTypeId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeClustersByEndpointTypeId) ⇒
+    * [~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef)](#module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef) ⇒
     * [~selectEndpointTypeAttributesByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId) ⇒
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
@@ -2500,6 +2514,18 @@ Get the endpoint type cluster details from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef"></a>
+
+### DB API: zcl database access~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef) ⇒
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: TBD  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeId | <code>\*</code> | 
+| clusterRef | <code>\*</code> | 
 
 <a name="module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId"></a>
 
@@ -2621,6 +2647,7 @@ This module provides queries for bitmaps.
     * [~selectAllAttributes(db, packageIds)](#module_DB API_ zcl database access..selectAllAttributes) ⇒
     * [~selectAllAttributesBySide(db, side, packageId)](#module_DB API_ zcl database access..selectAllAttributesBySide) ⇒
     * [~selectEndpointTypeClustersByEndpointTypeId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeClustersByEndpointTypeId) ⇒
+    * [~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef)](#module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef) ⇒
     * [~selectEndpointTypeAttributesByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId) ⇒
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
@@ -3350,6 +3377,18 @@ Get the endpoint type cluster details from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef"></a>
+
+### DB API: zcl database access~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef) ⇒
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: TBD  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeId | <code>\*</code> | 
+| clusterRef | <code>\*</code> | 
 
 <a name="module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId"></a>
 
@@ -4854,6 +4893,7 @@ inside a single session. Things like:
     * [~selectAllAttributes(db, packageIds)](#module_DB API_ zcl database access..selectAllAttributes) ⇒
     * [~selectAllAttributesBySide(db, side, packageId)](#module_DB API_ zcl database access..selectAllAttributesBySide) ⇒
     * [~selectEndpointTypeClustersByEndpointTypeId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeClustersByEndpointTypeId) ⇒
+    * [~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef)](#module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef) ⇒
     * [~selectEndpointTypeAttributesByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId) ⇒
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
@@ -5583,6 +5623,18 @@ Get the endpoint type cluster details from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef"></a>
+
+### DB API: zcl database access~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef) ⇒
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: TBD  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeId | <code>\*</code> | 
+| clusterRef | <code>\*</code> | 
 
 <a name="module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId"></a>
 
@@ -5755,6 +5807,7 @@ This module provides queries for enums.
     * [~selectAllAttributes(db, packageIds)](#module_DB API_ zcl database access..selectAllAttributes) ⇒
     * [~selectAllAttributesBySide(db, side, packageId)](#module_DB API_ zcl database access..selectAllAttributesBySide) ⇒
     * [~selectEndpointTypeClustersByEndpointTypeId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeClustersByEndpointTypeId) ⇒
+    * [~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef)](#module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef) ⇒
     * [~selectEndpointTypeAttributesByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId) ⇒
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
@@ -6484,6 +6537,18 @@ Get the endpoint type cluster details from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef"></a>
+
+### DB API: zcl database access~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef) ⇒
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: TBD  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeId | <code>\*</code> | 
+| clusterRef | <code>\*</code> | 
 
 <a name="module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId"></a>
 
@@ -6601,6 +6666,7 @@ across different query files.
     * [~selectAllAttributes(db, packageIds)](#module_DB API_ zcl database access..selectAllAttributes) ⇒
     * [~selectAllAttributesBySide(db, side, packageId)](#module_DB API_ zcl database access..selectAllAttributesBySide) ⇒
     * [~selectEndpointTypeClustersByEndpointTypeId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeClustersByEndpointTypeId) ⇒
+    * [~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef)](#module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef) ⇒
     * [~selectEndpointTypeAttributesByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId) ⇒
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
@@ -7330,6 +7396,18 @@ Get the endpoint type cluster details from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef"></a>
+
+### DB API: zcl database access~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef) ⇒
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: TBD  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeId | <code>\*</code> | 
+| clusterRef | <code>\*</code> | 
 
 <a name="module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId"></a>
 
@@ -7446,6 +7524,7 @@ This module provides queries for ZCL static queries.
     * [~selectAllAttributes(db, packageIds)](#module_DB API_ zcl database access..selectAllAttributes) ⇒
     * [~selectAllAttributesBySide(db, side, packageId)](#module_DB API_ zcl database access..selectAllAttributesBySide) ⇒
     * [~selectEndpointTypeClustersByEndpointTypeId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeClustersByEndpointTypeId) ⇒
+    * [~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef)](#module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef) ⇒
     * [~selectEndpointTypeAttributesByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId) ⇒
     * [~selectEndpointTypeAttribute(db, endpointTypeId, attributeRef, clusterRef)](#module_DB API_ zcl database access..selectEndpointTypeAttribute) ⇒
     * [~selectEndpointTypeCommandsByEndpointId(db, endpointTypeId)](#module_DB API_ zcl database access..selectEndpointTypeCommandsByEndpointId) ⇒
@@ -8175,6 +8254,18 @@ Get the endpoint type cluster details from the given endpoint type ID.
 | --- | --- |
 | db | <code>\*</code> | 
 | endpointTypeId | <code>\*</code> | 
+
+<a name="module_DB API_ zcl database access..selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef"></a>
+
+### DB API: zcl database access~selectServerEndpointTypeClusterIdByEndpointTypeIdAndClusterRef(db, endpointTypeId, clusterRef) ⇒
+**Kind**: inner method of [<code>DB API: zcl database access</code>](#module_DB API_ zcl database access)  
+**Returns**: TBD  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| endpointTypeId | <code>\*</code> | 
+| clusterRef | <code>\*</code> | 
 
 <a name="module_DB API_ zcl database access..selectEndpointTypeAttributesByEndpointId"></a>
 
@@ -14948,7 +15039,7 @@ This module provides the API to access zcl specific information.
     * [~httpGetEndpointIds(db)](#module_REST API_ user data..httpGetEndpointIds) ⇒
     * [~httpGetDeviceTypeFeatures(db)](#module_REST API_ user data..httpGetDeviceTypeFeatures) ⇒
     * [~httpPostCheckConformOnFeatureUpdate(db)](#module_REST API_ user data..httpPostCheckConformOnFeatureUpdate) ⇒
-    * [~httpGetRequiredElements(db)](#module_REST API_ user data..httpGetRequiredElements) ⇒
+    * [~httpPostRequiredElements(db)](#module_REST API_ user data..httpPostRequiredElements) ⇒
     * [~httpGetFeatureMapValue(db)](#module_REST API_ user data..httpGetFeatureMapValue)
     * [~httpGetSessionNotifications(db)](#module_REST API_ user data..httpGetSessionNotifications) ⇒
     * [~httpDeleteSessionNotification(db)](#module_REST API_ user data..httpDeleteSessionNotification) ⇒
@@ -15048,10 +15139,10 @@ Set related warnings if user confirmed the change or change is disabled.
 | --- | --- |
 | db | <code>\*</code> | 
 
-<a name="module_REST API_ user data..httpGetRequiredElements"></a>
+<a name="module_REST API_ user data..httpPostRequiredElements"></a>
 
-### REST API: user data~httpGetRequiredElements(db) ⇒
-HTTP GET: required and unsupported cluster elements based on conformance
+### REST API: user data~httpPostRequiredElements(db) ⇒
+HTTP POST: required and unsupported cluster elements based on conformance
 
 **Kind**: inner method of [<code>REST API: user data</code>](#module_REST API_ user data)  
 **Returns**: callback for the express uri registration  
@@ -16284,7 +16375,7 @@ This module provides the REST API to the user specific data.
     * [~httpGetEndpointIds(db)](#module_REST API_ user data..httpGetEndpointIds) ⇒
     * [~httpGetDeviceTypeFeatures(db)](#module_REST API_ user data..httpGetDeviceTypeFeatures) ⇒
     * [~httpPostCheckConformOnFeatureUpdate(db)](#module_REST API_ user data..httpPostCheckConformOnFeatureUpdate) ⇒
-    * [~httpGetRequiredElements(db)](#module_REST API_ user data..httpGetRequiredElements) ⇒
+    * [~httpPostRequiredElements(db)](#module_REST API_ user data..httpPostRequiredElements) ⇒
     * [~httpGetFeatureMapValue(db)](#module_REST API_ user data..httpGetFeatureMapValue)
     * [~httpGetSessionNotifications(db)](#module_REST API_ user data..httpGetSessionNotifications) ⇒
     * [~httpDeleteSessionNotification(db)](#module_REST API_ user data..httpDeleteSessionNotification) ⇒
@@ -16384,10 +16475,10 @@ Set related warnings if user confirmed the change or change is disabled.
 | --- | --- |
 | db | <code>\*</code> | 
 
-<a name="module_REST API_ user data..httpGetRequiredElements"></a>
+<a name="module_REST API_ user data..httpPostRequiredElements"></a>
 
-### REST API: user data~httpGetRequiredElements(db) ⇒
-HTTP GET: required and unsupported cluster elements based on conformance
+### REST API: user data~httpPostRequiredElements(db) ⇒
+HTTP POST: required and unsupported cluster elements based on conformance
 
 **Kind**: inner method of [<code>REST API: user data</code>](#module_REST API_ user data)  
 **Returns**: callback for the express uri registration  
@@ -20044,25 +20135,14 @@ and generate warnings for non-conformance.
 
 
 * [Validation API: check element conformance](#module_Validation API_ check element conformance)
-    * [~filterRelatedDescElements(elements, featureCode)](#module_Validation API_ check element conformance..filterRelatedDescElements) ⇒
     * [~generateWarningMessage(featureData, endpointId, elementMap, featureMap, descElements)](#module_Validation API_ check element conformance..generateWarningMessage) ⇒
-    * [~checkElementConformance(elements, featureMap, featureData, endpointId)](#module_Validation API_ check element conformance..checkElementConformance) ⇒
-    * [~filterElementsToUpdate(elements, elementMap, featureCode)](#module_Validation API_ check element conformance..filterElementsToUpdate) ⇒
+    * [~checkElementConformance(elements, featureMap, featureConformance, featureData, endpointId)](#module_Validation API_ check element conformance..checkElementConformance) ⇒
+    * [~filterElementsToUpdate(elements, elementMap, featureCodes)](#module_Validation API_ check element conformance..filterElementsToUpdate) ⇒
     * [~getOutdatedElementWarning(featureData, elements, elementMap)](#module_Validation API_ check element conformance..getOutdatedElementWarning) ⇒
         * [~processElements(elementType)](#module_Validation API_ check element conformance..getOutdatedElementWarning..processElements)
     * [~filterRequiredElements(elements, elementMap, featureMap)](#module_Validation API_ check element conformance..filterRequiredElements) ⇒
     * [~setConformanceWarnings(db, endpointId, endpointTypeId, endpointClusterId, deviceTypeRefs, cluster, sessionId)](#module_Validation API_ check element conformance..setConformanceWarnings) ⇒
-
-<a name="module_Validation API_ check element conformance..filterRelatedDescElements"></a>
-
-### Validation API: check element conformance~filterRelatedDescElements(elements, featureCode) ⇒
-**Kind**: inner method of [<code>Validation API: check element conformance</code>](#module_Validation API_ check element conformance)  
-**Returns**: elements with conformance containing 'desc' and the feature code  
-
-| Param | Type |
-| --- | --- |
-| elements | <code>\*</code> | 
-| featureCode | <code>\*</code> | 
+    * [~getEndpointTypeClusterIdFromFeatureData(db, featureData, endpointTypeId)](#module_Validation API_ check element conformance..getEndpointTypeClusterIdFromFeatureData) ⇒
 
 <a name="module_Validation API_ check element conformance..generateWarningMessage"></a>
 
@@ -20083,7 +20163,7 @@ Set flags to decide whether to show warnings or disable changes in the frontend.
 
 <a name="module_Validation API_ check element conformance..checkElementConformance"></a>
 
-### Validation API: check element conformance~checkElementConformance(elements, featureMap, featureData, endpointId) ⇒
+### Validation API: check element conformance~checkElementConformance(elements, featureMap, featureConformance, featureData, endpointId) ⇒
 Check if elements need to be updated for correct conformance if featureData provided.
 Otherwise, check if elements are required or unsupported by their conformance.
 
@@ -20095,12 +20175,13 @@ required and unsupported attributes, commands, and events, with warnings if not.
 | --- | --- | --- |
 | elements | <code>\*</code> |  | 
 | featureMap | <code>\*</code> |  | 
+| featureConformance | <code>\*</code> | <code></code> | 
 | featureData | <code>\*</code> | <code></code> | 
 | endpointId | <code>\*</code> | <code></code> | 
 
 <a name="module_Validation API_ check element conformance..filterElementsToUpdate"></a>
 
-### Validation API: check element conformance~filterElementsToUpdate(elements, elementMap, featureCode) ⇒
+### Validation API: check element conformance~filterElementsToUpdate(elements, elementMap, featureCodes) ⇒
 Return attributes, commands, or events to be updated satisfying:
 (1) its conformance includes feature code of the updated feature
 (2) it has mandatory conformance but it is not enabled, OR,
@@ -20113,7 +20194,7 @@ Return attributes, commands, or events to be updated satisfying:
 | --- | --- |
 | elements | <code>\*</code> | 
 | elementMap | <code>\*</code> | 
-| featureCode | <code>\*</code> | 
+| featureCodes | <code>\*</code> | 
 
 <a name="module_Validation API_ check element conformance..getOutdatedElementWarning"></a>
 
@@ -20178,6 +20259,18 @@ within a cluster.
 | cluster | <code>\*</code> | 
 | sessionId | <code>\*</code> | 
 
+<a name="module_Validation API_ check element conformance..getEndpointTypeClusterIdFromFeatureData"></a>
+
+### Validation API: check element conformance~getEndpointTypeClusterIdFromFeatureData(db, featureData, endpointTypeId) ⇒
+**Kind**: inner method of [<code>Validation API: check element conformance</code>](#module_Validation API_ check element conformance)  
+**Returns**: TDB  
+
+| Param | Type |
+| --- | --- |
+| db | <code>\*</code> | 
+| featureData | <code>\*</code> | 
+| endpointTypeId | <code>\*</code> | 
+
 <a name="module_Validation API_ Evaluate conformance expressions"></a>
 
 ## Validation API: Evaluate conformance expressions
@@ -20190,6 +20283,9 @@ This module provides utilities for evaluating conformance expressions.
         * [~evaluateWithParentheses(expr)](#module_Validation API_ Evaluate conformance expressions..evaluateConformanceExpression..evaluateWithParentheses)
     * [~checkMissingTerms(expression, elementMap)](#module_Validation API_ Evaluate conformance expressions..checkMissingTerms) ⇒
     * [~checkIfExpressionHasTerm(expression, term)](#module_Validation API_ Evaluate conformance expressions..checkIfExpressionHasTerm) ⇒
+    * [~getTermsFromExpression(expression)](#module_Validation API_ Evaluate conformance expressions..getTermsFromExpression) ⇒
+    * [~filterRelatedDescElements(elements, featureCodes)](#module_Validation API_ Evaluate conformance expressions..filterRelatedDescElements) ⇒
+    * [~fixFeatureConformanceRecursively(featureConformance, elementMap, updatedKeys, updatedFeatures)](#module_Validation API_ Evaluate conformance expressions..fixFeatureConformanceRecursively) ⇒ <code>Object</code>
 
 <a name="module_Validation API_ Evaluate conformance expressions..evaluateConformanceExpression"></a>
 
@@ -20262,6 +20358,39 @@ Check if the expression contains a given term.
 | --- |
 | expression | 
 | term | 
+
+<a name="module_Validation API_ Evaluate conformance expressions..getTermsFromExpression"></a>
+
+### Validation API: Evaluate conformance expressions~getTermsFromExpression(expression) ⇒
+**Kind**: inner method of [<code>Validation API: Evaluate conformance expressions</code>](#module_Validation API_ Evaluate conformance expressions)  
+**Returns**: TBD  
+
+| Param | Type |
+| --- | --- |
+| expression | <code>\*</code> | 
+
+<a name="module_Validation API_ Evaluate conformance expressions..filterRelatedDescElements"></a>
+
+### Validation API: Evaluate conformance expressions~filterRelatedDescElements(elements, featureCodes) ⇒
+**Kind**: inner method of [<code>Validation API: Evaluate conformance expressions</code>](#module_Validation API_ Evaluate conformance expressions)  
+**Returns**: elements with conformance containing 'desc' and any of the feature codes  
+
+| Param | Type |
+| --- | --- |
+| elements | <code>\*</code> | 
+| featureCodes | <code>\*</code> | 
+
+<a name="module_Validation API_ Evaluate conformance expressions..fixFeatureConformanceRecursively"></a>
+
+### Validation API: Evaluate conformance expressions~fixFeatureConformanceRecursively(featureConformance, elementMap, updatedKeys, updatedFeatures) ⇒ <code>Object</code>
+**Kind**: inner method of [<code>Validation API: Evaluate conformance expressions</code>](#module_Validation API_ Evaluate conformance expressions)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| featureConformance | <code>\*</code> |  |
+| elementMap | <code>\*</code> |  |
+| updatedKeys | <code>\*</code> | List of code of features that have already been updated |
+| updatedFeatures | <code>\*</code> | Object of updated features and their enabled status in format of: [{ key: true }] |
 
 <a name="module_Validation API_ Parse conformance data from XML"></a>
 
