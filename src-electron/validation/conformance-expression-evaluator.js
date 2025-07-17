@@ -73,7 +73,7 @@ function evaluateConformanceExpression(expression, elementMap) {
 
   // Check ',' for otherwise conformance first.
   // Split the expression by ',' and evaluate each part in sequence
-  let parts = expression.split(',')
+  let parts = expression.split(',').map((part) => part.trim())
   // if any term is desc, the conformance is too complex to parse
   for (let part of parts) {
     let terms = part.match(/[A-Za-z][A-Za-z0-9_]*/g)
@@ -92,7 +92,6 @@ function evaluateConformanceExpression(expression, elementMap) {
         return 'notSupported'
       }
     } else {
-      part = part.trim()
       if (part == dbEnum.conformance.mandatory) {
         return 'mandatory'
       } else if (part == dbEnum.conformance.optional) {

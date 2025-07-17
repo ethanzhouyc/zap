@@ -12,6 +12,7 @@
                   :src="image"
                   height="40"
                   class="q-mt-md w-fit-content"
+                  alt=""
                 />
               </div>
             </Transition>
@@ -762,10 +763,12 @@ export default {
         let atts = null
         let gen = null
         item.packageRef.forEach((element) => {
-          !atts
-            ? (atts = this.zclPropertiesRow.find((data) => data.id === element))
-            : ''
-          !gen ? (gen = this.zclGenRow.find((data) => data.id === element)) : ''
+          if (!atts) {
+            atts = this.zclPropertiesRow.find((data) => data.id === element)
+          }
+          if (!gen) {
+            gen = this.zclGenRow.find((data) => data.id === element)
+          }
         })
         this.loadPreSessionData.push({
           zclProperty: atts,
