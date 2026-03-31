@@ -827,7 +827,7 @@ test(
     )
     expectedWarning =
       clusterPrefix +
-      ` attribute CurrentHue, required by feature: ${featureHS.name} (${featureHS.code}), has external storage and ZAP does not have control over it.`
+      ` attribute CurrentHue, required by feature: ${featureHS.name} (${featureHS.code}), has ${dbEnum.warnings.externalStorageControl}`
     expect(result.displayWarning).toBeTruthy()
     expect(result.disableChange).toBeFalsy()
     expect(result.warningMessage).toContain(expectedWarning)

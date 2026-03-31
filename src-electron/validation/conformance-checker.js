@@ -241,7 +241,7 @@ function generateWarningMessage(
         clusterPrefix +
           ` ${isSingular ? 'attribute' : 'attributes'} ${externalAttrNames},` +
           ` required by feature: ${featureData.name} (${featureData.code}),` +
-          ` ${isSingular ? 'has' : 'have'} external storage and ZAP does not have control over it.`
+          ` ${isSingular ? 'has' : 'have'} ${dbEnum.warnings.externalStorageControl}`
       )
       result.displayWarning = true
     }
